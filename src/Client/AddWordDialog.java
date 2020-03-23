@@ -74,9 +74,15 @@ public class AddWordDialog extends JFrame {
                     case JOptionPane.YES_OPTION:
                         // TODO submit to server
                         System.out.println(wordTextField.getText() + meaningDisplay.getText());
+                        wordMeanings.clear();
+                        meaningDisplay.setText("");
+                        parent.setEnabled(true);
+                        dispose();
                         break;
                     case JOptionPane.CANCEL_OPTION:
                     case JOptionPane.CLOSED_OPTION:
+                        wordMeanings.clear();
+                        meaningDisplay.setText("");
                         parent.setEnabled(true);
                         dispose();
                 }

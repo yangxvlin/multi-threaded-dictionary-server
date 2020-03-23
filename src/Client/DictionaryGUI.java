@@ -40,7 +40,7 @@ public class DictionaryGUI {
         dashboard.setEditable(false);
         dashboard.setBackground(SystemColor.window);
         dashboard.setLineWrap(true);
-        dashboard.setBounds(7, 400, 700, 50);
+        dashboard.setBounds(50, 330, 900, 50);
         panel.add(dashboard);
 
         frame.add(panel);
@@ -66,7 +66,9 @@ public class DictionaryGUI {
         btnSearch.setBackground(SystemColor.menu);
         btnSearch.setForeground(Color.BLACK);
         btnSearch.setBounds(810, 260, 100, 25);
-//        btnSearch.addActionListener(new SearchActionListener());
+        btnSearch.addActionListener(e -> {
+            System.out.println("search: " + wordTextField.getText());
+        });
         panel.add(btnSearch);
     }
 
@@ -87,7 +89,9 @@ public class DictionaryGUI {
         btnRemove.setBackground(SystemColor.menu);
         btnRemove.setForeground(Color.BLACK);
         btnRemove.setBounds(500, 290, 120, 25);
-//        btnRemove.addActionListener(new SearchActionListener());
+        btnRemove.addActionListener(e -> {
+            System.out.println("Remove: " + wordTextField.getText());
+        });
         panel.add(btnRemove);
     }
 }
