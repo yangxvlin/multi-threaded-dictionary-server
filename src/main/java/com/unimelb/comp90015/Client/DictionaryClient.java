@@ -1,4 +1,4 @@
-package Client;
+package com.unimelb.comp90015.Client;
 
 /**
  * Xulin Yang, 904904

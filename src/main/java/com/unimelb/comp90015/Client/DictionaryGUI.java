@@ -1,10 +1,10 @@
-package Client;
+package com.unimelb.comp90015.Client;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
 
-import static Client.Constant.APP_ICON_PATH;
+import static com.unimelb.comp90015.Client.Constant.APP_ICON_PATH;
 import static java.awt.Component.CENTER_ALIGNMENT;
 
 /**
