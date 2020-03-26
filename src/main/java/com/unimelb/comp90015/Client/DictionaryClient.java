@@ -1,5 +1,7 @@
 package com.unimelb.comp90015.Client;
 
+import com.unimelb.comp90015.Constant;
+
 /**
  * Xulin Yang, 904904
  *
@@ -10,6 +12,9 @@ package com.unimelb.comp90015.Client;
 public class DictionaryClient {
 
     public static void main(String[] args) {
-        DictionaryGUI gui = new DictionaryGUI(Constant.APP_NAME);
+        String serverAddress = args[0];
+        int serverPort = Integer.parseInt(args[1]);
+
+        DictionaryGUI gui = new DictionaryGUI(Constant.APP_NAME, serverAddress, serverPort);
     }
 }

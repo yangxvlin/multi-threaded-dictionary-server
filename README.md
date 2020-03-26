@@ -1,4 +1,4 @@
-# multi-threaded-dictionary-server
+# multi-threaded-simpleDictionary-server
 COMP90015 - Distributed System - 2020S1
 
 ## How to run

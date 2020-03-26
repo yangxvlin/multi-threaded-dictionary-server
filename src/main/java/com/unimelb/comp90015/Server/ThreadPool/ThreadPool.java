@@ -65,7 +65,7 @@ public class ThreadPool {
                 }
 
                 try {
-                    task.run();
+                    task.start();
                 } catch (RuntimeException e) {
                     System.out.println("Thread pool is interrupted due to an issue: " + e.getMessage());
                 }

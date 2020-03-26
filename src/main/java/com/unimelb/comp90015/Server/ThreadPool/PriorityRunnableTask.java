@@ -9,14 +9,14 @@ import java.util.Date;
  * description:
  **/
 
-public class PriorityRunnableTask implements Runnable, Comparable<PriorityRunnableTask> {
-    private Runnable task;
+public class PriorityRunnableTask extends Thread implements Comparable<PriorityRunnableTask> {
+    private Thread task;
 
     private int priority;
 
     private Date allocatedTime;
 
-    public PriorityRunnableTask(Runnable task, int priority, Date allocatedTime) {
+    public PriorityRunnableTask(Thread task, int priority, Date allocatedTime) {
         this.task = task;
         this.priority = priority;
         this.allocatedTime = allocatedTime;
@@ -33,8 +33,9 @@ public class PriorityRunnableTask implements Runnable, Comparable<PriorityRunnab
      *
      * @see Thread#run()
      */
+    @Override
     public void run() {
-        this.task.run();
+        this.task.start();
     }
 
     /**

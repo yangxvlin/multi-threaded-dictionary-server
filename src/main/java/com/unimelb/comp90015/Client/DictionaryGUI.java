@@ -1,10 +1,15 @@
 package com.unimelb.comp90015.Client;
 
+import com.google.gson.JsonObject;
+
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
 
-import static com.unimelb.comp90015.Client.Constant.APP_ICON_PATH;
+import static com.unimelb.comp90015.Constant.*;
+import static com.unimelb.comp90015.Util.wrapWithQuotation;
 import static java.awt.Component.CENTER_ALIGNMENT;
 
 /**
@@ -19,8 +24,13 @@ public class DictionaryGUI {
     private JPanel panel;
     private JTextArea dashboard = new JTextArea();
     private static JTextField wordTextField;
+    private String serverAddress;
+    private int serverPort;
 
-    public DictionaryGUI(String appName) {
+    public DictionaryGUI(String appName, String serverAddress, int serverPort) {
+        this.serverAddress = serverAddress;
+        this.serverPort = serverPort;
+
         // create JFrame instance
         frame = new JFrame(appName);
         // Setting the width and height of frame
@@ -49,7 +59,7 @@ public class DictionaryGUI {
         frame.setVisible(true);
     }
 
-    private static void placeIcons(JPanel panel) {
+    private void placeIcons(JPanel panel) {
         ImageIcon icon = new ImageIcon(APP_ICON_PATH);
         JLabel label=new JLabel(icon);
         label.setAlignmentX(CENTER_ALIGNMENT);
@@ -57,7 +67,7 @@ public class DictionaryGUI {
         panel.add(label);
     }
 
-    private static void placeTextSearch(JPanel panel) {
+    private void placeTextSearch(JPanel panel) {
         wordTextField = new JTextField(20);
         wordTextField.setBounds(100, 260, 700, 25);
         panel.add(wordTextField);
@@ -67,7 +77,21 @@ public class DictionaryGUI {
         btnSearch.setForeground(Color.BLACK);
         btnSearch.setBounds(810, 260, 100, 25);
         btnSearch.addActionListener(e -> {
-            System.out.println("search: " + wordTextField.getText());
+            String word = wordTextField.getText();
+            //TODO word valid test
+//            String request = "{\"" + TASK_CODE + "\": \"" + SEARCH_TASK_CODE + "\", \""+ CONTENT + "\":\"" + word + "\"}\n";
+            JsonObject requestJSON = new JsonObject();
+            requestJSON.addProperty(TASK_CODE, SEARCH_TASK_CODE);
+            requestJSON.addProperty(CONTENT, word);
+            String request = requestJSON.toString();
+
+            Client searchClient = new Client(this.serverAddress, this.serverPort);
+            searchClient.send(request);
+            System.out.println("Client request sent: " + request);
+            String response = searchClient.receive();
+            this.dashboard.setText(response);
+            System.out.println("Client response received: " + response);
+            searchClient.close();
         });
         panel.add(btnSearch);
     }
