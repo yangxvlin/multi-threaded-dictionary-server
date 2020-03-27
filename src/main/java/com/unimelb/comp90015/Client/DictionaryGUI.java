@@ -1,15 +1,12 @@
 package com.unimelb.comp90015.Client;
 
-import com.google.gson.JsonObject;
+import com.unimelb.comp90015.Client.ConnectionStrategy.IConnectionStrategy;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
 
 import static com.unimelb.comp90015.Constant.*;
-import static com.unimelb.comp90015.Util.wrapWithQuotation;
 import static java.awt.Component.CENTER_ALIGNMENT;
 
 /**
@@ -20,16 +17,13 @@ import static java.awt.Component.CENTER_ALIGNMENT;
  **/
 
 public class DictionaryGUI {
-    private static JFrame frame;
-    private JPanel panel;
+    private JFrame frame;
     private JTextArea dashboard = new JTextArea();
-    private static JTextField wordTextField;
-    private String serverAddress;
-    private int serverPort;
+    private JTextField wordTextField;
+    private IConnectionStrategy connectionStrategy;
 
-    public DictionaryGUI(String appName, String serverAddress, int serverPort) {
-        this.serverAddress = serverAddress;
-        this.serverPort = serverPort;
+    public DictionaryGUI(String appName, IConnectionStrategy connectionStrategy) {
+        this.connectionStrategy = connectionStrategy;
 
         // create JFrame instance
         frame = new JFrame(appName);
@@ -38,10 +32,10 @@ public class DictionaryGUI {
         frame.getContentPane().setBackground(Color.white);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-        panel=new JPanel();
+        JPanel panel = new JPanel();
         panel.setLayout(null);
         panel.setBorder(new EmptyBorder(7, 7, 7, 7));
-//        panel.setBackground(Color.WHITE);
+        panel.setBackground(Color.WHITE);
 
         placeIcons(panel);
         placeTextSearch(panel);
@@ -57,6 +51,10 @@ public class DictionaryGUI {
 
         // set frame visible
         frame.setVisible(true);
+    }
+
+    public JFrame getFrame() {
+        return frame;
     }
 
     private void placeIcons(JPanel panel) {
@@ -79,19 +77,7 @@ public class DictionaryGUI {
         btnSearch.addActionListener(e -> {
             String word = wordTextField.getText();
             //TODO word valid test
-//            String request = "{\"" + TASK_CODE + "\": \"" + SEARCH_TASK_CODE + "\", \""+ CONTENT + "\":\"" + word + "\"}\n";
-            JsonObject requestJSON = new JsonObject();
-            requestJSON.addProperty(TASK_CODE, SEARCH_TASK_CODE);
-            requestJSON.addProperty(CONTENT, word);
-            String request = requestJSON.toString();
-
-            Client searchClient = new Client(this.serverAddress, this.serverPort);
-            searchClient.send(request);
-            System.out.println("Client request sent: " + request);
-            String response = searchClient.receive();
-            this.dashboard.setText(response);
-            System.out.println("Client response received: " + response);
-            searchClient.close();
+            this.dashboard.setText(connectionStrategy.searchConnection(word));
         });
         panel.add(btnSearch);
     }
@@ -105,7 +91,7 @@ public class DictionaryGUI {
         btnAdd.addActionListener(l -> {
             frame.setEnabled(false);
             frame.setModalExclusionType(Dialog.ModalExclusionType.NO_EXCLUDE);
-            AddWordDialog addWordDialog = new AddWordDialog(frame, wordTextField.getText());
+            AddWordDialog addWordDialog = new AddWordDialog(this, wordTextField.getText());
         });
         panel.add(btnAdd);
 
@@ -114,8 +100,17 @@ public class DictionaryGUI {
         btnRemove.setForeground(Color.BLACK);
         btnRemove.setBounds(500, 290, 120, 25);
         btnRemove.addActionListener(e -> {
-            System.out.println("Remove: " + wordTextField.getText());
+            String word = wordTextField.getText();
+            this.dashboard.setText(connectionStrategy.deleteConnection(word));
         });
         panel.add(btnRemove);
+    }
+
+    public IConnectionStrategy getConnectionStrategy() {
+        return connectionStrategy;
+    }
+
+    public JTextArea getDashboard() {
+        return dashboard;
     }
 }

@@ -1,5 +1,7 @@
 package com.unimelb.comp90015.Client;
 
+import com.unimelb.comp90015.Client.ConnectionStrategy.ConnectionStrategy;
+import com.unimelb.comp90015.Client.ConnectionStrategy.IConnectionStrategy;
 import com.unimelb.comp90015.Constant;
 
 /**
@@ -15,6 +17,8 @@ public class DictionaryClient {
         String serverAddress = args[0];
         int serverPort = Integer.parseInt(args[1]);
 
-        DictionaryGUI gui = new DictionaryGUI(Constant.APP_NAME, serverAddress, serverPort);
+        IConnectionStrategy connectionStrategy = new ConnectionStrategy(serverAddress, serverPort);
+
+        DictionaryGUI gui = new DictionaryGUI(Constant.APP_NAME, connectionStrategy);
     }
 }

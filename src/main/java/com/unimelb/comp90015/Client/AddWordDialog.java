@@ -16,15 +16,15 @@ import java.util.ArrayList;
 public class AddWordDialog extends JFrame {
     private static JTextArea meaningDisplay = new JTextArea();
 
-    public AddWordDialog(JFrame parent, String word) {
+    public AddWordDialog(DictionaryGUI parent, String word) {
         setTitle("Adding word");
         setLayout(new FlowLayout(FlowLayout.LEFT, 5, 5));
 //        setAlwaysOnTop(true);
         setBounds(new Rectangle(
-            (int) parent.getBounds().getX() + 200,
-            (int) parent.getBounds().getY() + 20,
-                (int) parent.getBounds().getWidth(),
-                (int) parent.getBounds().getHeight()
+            (int) parent.getFrame().getBounds().getX() + 200,
+            (int) parent.getFrame().getBounds().getY() + 20,
+                (int) parent.getFrame().getBounds().getWidth(),
+                (int) parent.getFrame().getBounds().getHeight()
             )
         );
 
@@ -50,8 +50,10 @@ public class AddWordDialog extends JFrame {
                         "What is the meaning of '" + wordTextField.getText() + "' ?",
                         "Add a meaning for word",
                         JOptionPane.QUESTION_MESSAGE);
-                wordMeanings.add(meaning);
-                meaningDisplay.append(wordMeanings.size() + ". " + meaning + "\n");
+                if (meaning != null && !meaning.isEmpty()) {
+                    wordMeanings.add(meaning);
+                    meaningDisplay.append(wordMeanings.size() + ". " + meaning + "\n");
+                }
             }
         );
         add(btnAddAMeaning);
@@ -71,17 +73,21 @@ public class AddWordDialog extends JFrame {
                 switch (confirmation) {
                     case JOptionPane.YES_OPTION:
                         // TODO submit to server
-                        System.out.println(wordTextField.getText() + meaningDisplay.getText());
+                        String wordToAdd = wordTextField.getText();
+                        String meaning = meaningDisplay.getText();
+                        String response = parent.getConnectionStrategy().addConnection(wordToAdd, meaning);
+                        parent.getDashboard().setText(response);
+
                         wordMeanings.clear();
                         meaningDisplay.setText("");
-                        parent.setEnabled(true);
+                        parent.getFrame().setEnabled(true);
                         dispose();
                         break;
                     case JOptionPane.CANCEL_OPTION:
                     case JOptionPane.CLOSED_OPTION:
                         wordMeanings.clear();
                         meaningDisplay.setText("");
-                        parent.setEnabled(true);
+                        parent.getFrame().setEnabled(true);
                         dispose();
                 }
             }
@@ -97,7 +103,7 @@ public class AddWordDialog extends JFrame {
         addWindowListener(new WindowAdapter(){
         public void windowClosing(WindowEvent e){
             //设置启用
-            parent.setEnabled(true);
+            parent.getFrame().setEnabled(true);
             }
         });
 

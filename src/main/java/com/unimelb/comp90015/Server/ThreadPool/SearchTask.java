@@ -1,5 +1,6 @@
 package com.unimelb.comp90015.Server.ThreadPool;
 
+import com.google.gson.JsonObject;
 import com.unimelb.comp90015.Server.Dictionary.IDictionary;
 import com.unimelb.comp90015.Server.Dictionary.WordNotFoundException;
 
@@ -7,7 +8,6 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 
 import static com.unimelb.comp90015.Constant.*;
-import static com.unimelb.comp90015.Util.wrapWithQuotation;
 
 /**
  * Xulin Yang, 904904
@@ -39,8 +39,11 @@ public class SearchTask extends Thread {
         try {
             result = dictionary.search(word);
         } catch (WordNotFoundException e) {
-            result = "{" + wrapWithQuotation(RESPONSE_CODE) + ":" + wrapWithQuotation(e.getCode()) + "," +
-                    wrapWithQuotation(CONTENT) + ":" + wrapWithQuotation(e.getMessage()) + "}\n";
+            JsonObject jsonObject = new JsonObject();
+            jsonObject.addProperty(RESPONSE_CODE, e.getCode());
+            jsonObject.addProperty(CONTENT, e.getMessage());
+
+            result = jsonObject.toString();
         }
         System.out.println("    client's response string: " + result);
         try {

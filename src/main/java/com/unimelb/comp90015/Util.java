@@ -8,7 +8,7 @@ package com.unimelb.comp90015;
  **/
 
 public class Util {
-    public static String wrapWithQuotation(String string) {
-        return "\"" + string + "\"";
+    public static String getError(String errorCode, String errorContent) {
+        return "Error(" + errorCode + "): " + errorContent;
     }
 }

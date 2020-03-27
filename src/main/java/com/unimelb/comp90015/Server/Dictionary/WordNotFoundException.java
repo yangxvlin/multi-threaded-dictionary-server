@@ -1,6 +1,6 @@
 package com.unimelb.comp90015.Server.Dictionary;
 
-import static com.unimelb.comp90015.Constant.NO_SUCH_WORD;
+import static com.unimelb.comp90015.Constant.NO_SUCH_WORD_CONTENT;
 import static com.unimelb.comp90015.Constant.NO_SUCH_WORD_CODE;
 
 /**
@@ -17,7 +17,7 @@ public class WordNotFoundException extends Exception {
 
     @Override
     public String getMessage() {
-        return NO_SUCH_WORD;
+        return NO_SUCH_WORD_CONTENT;
     }
 
     public String getCode() {
