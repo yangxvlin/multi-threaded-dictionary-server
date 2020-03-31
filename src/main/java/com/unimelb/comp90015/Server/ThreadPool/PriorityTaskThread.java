@@ -9,14 +9,14 @@ import java.util.Date;
  * description:
  **/
 
-public class PriorityRunnableTask extends Thread implements Comparable<PriorityRunnableTask> {
+public class PriorityTaskThread extends Thread implements Comparable<PriorityTaskThread> {
     private Thread task;
 
     private int priority;
 
     private Date allocatedTime;
 
-    public PriorityRunnableTask(Thread task, int priority, Date allocatedTime) {
+    public PriorityTaskThread(Thread task, int priority, Date allocatedTime) {
         this.task = task;
         this.priority = priority;
         this.allocatedTime = allocatedTime;
@@ -25,13 +25,8 @@ public class PriorityRunnableTask extends Thread implements Comparable<PriorityR
     /**
      * When an object implementing interface <code>Runnable</code> is used
      * to create a thread, starting the thread causes the object's
-     * <code>run</code> method to be called in that separately executing
+     * run method to be called in that separately executing
      * thread.
-     * <p>
-     * The general contract of the method <code>run</code> is that it may
-     * take any action whatsoever.
-     *
-     * @see Thread#run()
      */
     @Override
     public void run() {
@@ -47,7 +42,7 @@ public class PriorityRunnableTask extends Thread implements Comparable<PriorityR
      * @return a negative integer, zero, or a positive integer as this object
      * is less than, equal to, or greater than the specified object.
      */
-    public int compareTo(PriorityRunnableTask other) {
+    public int compareTo(PriorityTaskThread other) {
         if (this.priority < other.priority) {
             return -1;
         } else if (this.priority > other.priority) {

@@ -17,7 +17,7 @@ public class ThreadPool {
     private final WorkerThread[] workers;
 
     // FIFO ordering
-    private final PriorityBlockingQueue<PriorityRunnableTask> queue;
+    private final PriorityBlockingQueue<PriorityTaskThread> queue;
 
     public ThreadPool(int poolSize) {
 
@@ -34,7 +34,7 @@ public class ThreadPool {
     /**
      * @param task: task added to pool's queue to be executed
      */
-    public void execute(PriorityRunnableTask task) {
+    public void execute(PriorityTaskThread task) {
         synchronized (queue) {
             queue.add(task);
             queue.notify();
@@ -50,7 +50,7 @@ public class ThreadPool {
 
     private class WorkerThread extends Thread {
         public void run() {
-            PriorityRunnableTask task;
+            PriorityTaskThread task;
 
             while (true) {
                 synchronized (queue) {

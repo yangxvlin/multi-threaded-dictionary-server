@@ -1,13 +1,10 @@
 package com.unimelb.comp90015.Server.Dictionary;
 
-import com.unimelb.comp90015.Constant;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
+import java.io.*;
 
 /**
  * Xulin Yang, 904904
@@ -19,12 +16,15 @@ import java.io.IOException;
 public class SimpleDictionary implements IDictionary {
     private JSONObject dictionary;
 
+    private String dictionaryFilePath;
+
     public SimpleDictionary(String dictionaryFilePath) {
+        this.dictionaryFilePath = dictionaryFilePath;
+
         //JSON parser object to parse read file
         JSONParser jsonParser = new JSONParser();
 
-        try (FileReader reader = new FileReader(dictionaryFilePath))
-        {
+        try (FileReader reader = new FileReader(dictionaryFilePath)) {
             //Read JSON file
             dictionary = (JSONObject) jsonParser.parse(reader);
 
@@ -43,12 +43,33 @@ public class SimpleDictionary implements IDictionary {
     }
 
     @Override
-    public synchronized String remove(String word) {
-        return null;
+    public synchronized void remove(String word) throws WordNotFoundException {
+        if (dictionary.containsKey(word)) {
+            dictionary.remove(word);
+            save();
+        } else {
+            throw new WordNotFoundException();
+        }
     }
 
     @Override
-    public synchronized String add(String word) {
-        return null;
+    public synchronized void add(String word, String meaning) throws DuplicateWordException {
+        if (dictionary.containsKey(word)) {
+            throw new DuplicateWordException();
+        } else {
+            dictionary.put(word, meaning);
+            save();
+        }
+    }
+
+    @Override
+    public void save() {
+        File f= new File(dictionaryFilePath);
+        try {
+            Writer out = new FileWriter(f) ;
+            dictionary.writeJSONString(out);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }

@@ -2,6 +2,9 @@ package com.unimelb.comp90015.Client.ConnectionStrategy;
 
 import com.google.gson.JsonObject;
 import com.unimelb.comp90015.Client.Client;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 
 import java.io.IOException;
 
@@ -20,9 +23,13 @@ public class ConnectionStrategy implements IConnectionStrategy {
     private String serverAddress;
     private int serverPort;
 
-    public ConnectionStrategy(String serverAddress, int serverPort) {
+    private Client client;
+
+    public ConnectionStrategy(String serverAddress, int serverPort) throws IOException {
         this.serverAddress = serverAddress;
-        this.serverPort =serverPort;
+        this.serverPort = serverPort;
+
+        client = new Client(serverAddress, serverPort);
     }
 
     @Override
@@ -36,20 +43,27 @@ public class ConnectionStrategy implements IConnectionStrategy {
         requestJSON.addProperty(CONTENT, word);
         String request = requestJSON.toString();
 
-        String response;
         try {
-            Client searchClient = new Client(this.serverAddress, this.serverPort);
-            searchClient.send(request);
+            client.send(request);
             System.out.println("Client request sent: " + request);
-            response = searchClient.receive();
+            String response = client.receive();
             System.out.println("Client response received: " + response);
-            searchClient.close();
+            JSONParser jsonParser = new JSONParser();
+            JSONObject responseJSON = (JSONObject) jsonParser.parse(response);
+            String responseCode = (String) responseJSON.get(RESPONSE_CODE);
+            switch (responseCode) {
+                case SUCCESSFUL_SEARCH_TASK_CODE:
+                    return (String) responseJSON.get(MEANING);
+                default:
+                    String errorContent = (String) responseJSON.get(CONTENT);
+                    return getError(responseCode, errorContent);
+            }
+
         } catch (IOException e) {
             return getError(ERROR_CONNECTION_CODE, ERROR_CONNECTION_CONTENT);
+        } catch (ParseException e) {
+            return getError(INVALID_RESPONSE_CODE, INVALID_RESPONSE_CONTENT);
         }
-
-
-        return response;
     }
 
     @Override
@@ -69,18 +83,26 @@ public class ConnectionStrategy implements IConnectionStrategy {
 
         String response;
         try {
-            Client searchClient = new Client(this.serverAddress, this.serverPort);
-            searchClient.send(request);
+            client.send(request);
             System.out.println("Client request sent: " + request);
-            response = searchClient.receive();
+            response = client.receive();
             System.out.println("Client response received: " + response);
-            searchClient.close();
+            JSONParser jsonParser = new JSONParser();
+            JSONObject responseJSON = (JSONObject) jsonParser.parse(response);
+            String responseCode = (String) responseJSON.get(RESPONSE_CODE);
+            switch (responseCode) {
+                case SUCCESSFUL_ADD_TASK_CODE:
+                    return (String) responseJSON.get(CONTENT);
+                default:
+                    String errorContent = (String) responseJSON.get(CONTENT);
+                    return getError(responseCode, errorContent);
+            }
+
         } catch (IOException e) {
             return getError(ERROR_CONNECTION_CODE, ERROR_CONNECTION_CONTENT);
+        } catch (ParseException e) {
+            return getError(INVALID_RESPONSE_CODE, INVALID_RESPONSE_CONTENT);
         }
-
-
-        return response;
     }
 
     @Override
@@ -96,17 +118,25 @@ public class ConnectionStrategy implements IConnectionStrategy {
 
         String response;
         try {
-            Client searchClient = new Client(this.serverAddress, this.serverPort);
-            searchClient.send(request);
+            client.send(request);
             System.out.println("Client request sent: " + request);
-            response = searchClient.receive();
+            response = client.receive();
             System.out.println("Client response received: " + response);
-            searchClient.close();
+            JSONParser jsonParser = new JSONParser();
+            JSONObject responseJSON = (JSONObject) jsonParser.parse(response);
+            String responseCode = (String) responseJSON.get(RESPONSE_CODE);
+            switch (responseCode) {
+                case SUCCESSFUL_DELETE_TASK_CODE:
+                    return (String) responseJSON.get(CONTENT);
+                default:
+                    String errorContent = (String) responseJSON.get(CONTENT);
+                    return getError(responseCode, errorContent);
+            }
+
         } catch (IOException e) {
             return getError(ERROR_CONNECTION_CODE, ERROR_CONNECTION_CONTENT);
+        } catch (ParseException e) {
+            return getError(INVALID_RESPONSE_CODE, INVALID_RESPONSE_CONTENT);
         }
-
-
-        return response;
     }
 }

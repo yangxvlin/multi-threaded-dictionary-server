@@ -16,12 +16,12 @@ import static com.unimelb.comp90015.Constant.*;
  * description:
  **/
 
-public class SearchTask extends Thread {
+public class SearchTaskThread extends Thread {
     private IDictionary dictionary;
     private String word;
     private DataOutputStream os;
 
-    public SearchTask(IDictionary dictionary, String word, DataOutputStream os) {
+    public SearchTaskThread(IDictionary dictionary, String word, DataOutputStream os) {
         this.dictionary = dictionary;
         this.word = word;
         this.os = os;

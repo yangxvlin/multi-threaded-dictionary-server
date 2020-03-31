@@ -3,7 +3,7 @@ package com.unimelb.comp90015.Server;
 import com.unimelb.comp90015.Server.Dictionary.IDictionary;
 import com.unimelb.comp90015.Server.Dictionary.SimpleDictionary;
 import com.unimelb.comp90015.Server.ThreadPool.HandleConnectionThread;
-import com.unimelb.comp90015.Server.ThreadPool.PriorityRunnableTask;
+import com.unimelb.comp90015.Server.ThreadPool.PriorityTaskThread;
 import com.unimelb.comp90015.Server.ThreadPool.ThreadPool;
 
 import javax.net.ServerSocketFactory;
@@ -43,8 +43,8 @@ public class DictionaryServer {
                 Socket client = server.accept();
 
                 HandleConnectionThread connectionThread = new HandleConnectionThread(client, dictionary, threadPool);
-                PriorityRunnableTask connectionPriorityRunnableTask = new PriorityRunnableTask(connectionThread, 1, new Date());
-                threadPool.execute(connectionPriorityRunnableTask);
+                PriorityTaskThread connectionPriorityTaskThread = new PriorityTaskThread(connectionThread, 1, new Date());
+                threadPool.execute(connectionPriorityTaskThread);
 
             }
         } catch (IOException e) {
