@@ -55,13 +55,13 @@ public class HandleConnectionThread extends Thread {
             String requestString = null;
             try {
                 requestString = is.readUTF();
+            // client already disconnect
             } catch (IOException e) {
-                e.printStackTrace();
+                break;
             }
             System.out.println("    client's request: " + requestString);
             System.out.println(requestString);
 
-            assert requestString != null;
             JSONParser jsonParser = new JSONParser();
             JSONObject requestJSON = null;
             try {
