@@ -5,6 +5,9 @@ import com.unimelb.comp90015.Client.ConnectionStrategy.IConnectionStrategy;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.io.IOException;
 
 import static com.unimelb.comp90015.Constant.*;
 import static java.awt.Component.CENTER_ALIGNMENT;
@@ -29,13 +32,13 @@ public class DictionaryGUI {
         frame = new JFrame(appName);
         // Setting the width and height of frame
         frame.setSize(1024, 720);
-        frame.getContentPane().setBackground(Color.white);
+//        frame.getContentPane().setBackground(Color.white);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
         JPanel panel = new JPanel();
         panel.setLayout(null);
         panel.setBorder(new EmptyBorder(7, 7, 7, 7));
-        panel.setBackground(Color.WHITE);
+//        panel.setBackground(Color.WHITE);
 
         placeIcons(panel);
         placeTextSearch(panel);
@@ -46,6 +49,20 @@ public class DictionaryGUI {
         dashboard.setLineWrap(true);
         dashboard.setBounds(50, 330, 900, 50);
         panel.add(dashboard);
+
+        frame.addWindowListener(new WindowAdapter()
+        {
+            @Override
+            public void windowClosing(WindowEvent e)
+            {
+                try {
+                    connectionStrategy.closeConnection();
+                } catch (IOException e1) {
+                    e1.printStackTrace();
+                }
+                e.getWindow().dispose();
+            }
+        });
 
         frame.add(panel);
 

@@ -1,5 +1,7 @@
 package com.unimelb.comp90015.Client.ConnectionStrategy;
 
+import java.io.IOException;
+
 /**
  * Xulin Yang, 904904
  *
@@ -13,4 +15,6 @@ public interface IConnectionStrategy {
     String addConnection(String word, String meaning);
 
     String deleteConnection(String word);
+
+    void closeConnection() throws IOException;
 }

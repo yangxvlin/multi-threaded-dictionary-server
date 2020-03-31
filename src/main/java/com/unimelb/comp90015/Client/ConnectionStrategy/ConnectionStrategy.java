@@ -139,4 +139,9 @@ public class ConnectionStrategy implements IConnectionStrategy {
             return getError(INVALID_RESPONSE_CODE, INVALID_RESPONSE_CONTENT);
         }
     }
+
+    @Override
+    public void closeConnection() throws IOException {
+        client.close();
+    }
 }
