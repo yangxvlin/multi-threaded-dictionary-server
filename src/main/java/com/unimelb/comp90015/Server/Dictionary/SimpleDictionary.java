@@ -63,11 +63,13 @@ public class SimpleDictionary implements IDictionary {
     }
 
     @Override
-    public void save() {
+    public synchronized void save() {
         File f= new File(dictionaryFilePath);
         try {
-            Writer out = new FileWriter(f) ;
-            dictionary.writeJSONString(out);
+            Writer out = new FileWriter(f);
+            System.out.println(dictionary.toJSONString());
+            out.write(dictionary.toJSONString());
+            out.close();
         } catch (IOException e) {
             e.printStackTrace();
         }
