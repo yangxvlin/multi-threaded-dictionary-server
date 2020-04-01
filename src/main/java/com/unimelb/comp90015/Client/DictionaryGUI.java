@@ -93,8 +93,7 @@ public class DictionaryGUI {
         btnSearch.setBounds(810, 260, 100, 25);
         btnSearch.addActionListener(e -> {
             String word = wordTextField.getText();
-            //TODO word valid test
-            this.dashboard.setText(connectionStrategy.searchConnection(word));
+            connectionStrategy.searchConnection(word, this.dashboard);
         });
         panel.add(btnSearch);
     }

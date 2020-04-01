@@ -17,6 +17,12 @@ public class Constant {
     // *************************** Task *****************************
     public static final String TASK_CODE = "task_code";
 
+
+    /**
+     * task for receiving notification from the server
+     */
+    public static final String SERVER_NOTIFICATION_TASK_CODE = "0";
+
     public static final String SEARCH_TASK_CODE = "1";
 
     public static final String SUCCESSFUL_SEARCH_TASK_CODE = "100";
@@ -32,6 +38,7 @@ public class Constant {
     public static final String SUCCESSFUL_DELETE_TASK_CODE = "300";
 
     public static final String SUCCESSFUL_DELETE_TASK_CONTENT = "Successfully delete the word in the dictionary!";
+
 
     // *************************** Content *****************************
     public static final String CONTENT = "content";

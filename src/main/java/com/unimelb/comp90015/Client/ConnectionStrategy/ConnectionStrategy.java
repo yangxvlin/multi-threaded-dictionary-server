@@ -6,6 +6,7 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
+import javax.swing.*;
 import java.io.IOException;
 
 import static com.unimelb.comp90015.Constant.*;
@@ -37,9 +38,9 @@ public class ConnectionStrategy implements IConnectionStrategy {
     }
 
     @Override
-    public String searchConnection(String word) {
+    public void searchConnection(String word, JTextArea dashboard) {
         if (word.isEmpty()) {
-            return getError(EMPTY_WORD_CODE, EMPTY_WORD_CONTENT);
+            dashboard.setText(getError(EMPTY_WORD_CODE, EMPTY_WORD_CONTENT));
         }
 
         JsonObject requestJSON = new JsonObject();
@@ -49,7 +50,7 @@ public class ConnectionStrategy implements IConnectionStrategy {
 
         boolean requireReconnection = false;
 
-        while (true) {
+        infiniteLoop: while (true) {
             try {
                 if (requireReconnection) {
                     reconnect();
@@ -57,27 +58,37 @@ public class ConnectionStrategy implements IConnectionStrategy {
 
                 client.send(request);
                 System.out.println("Client request sent: " + request);
-                String response = client.receive();
-                System.out.println("Client response received: " + response);
-                JSONParser jsonParser = new JSONParser();
-                JSONObject responseJSON = (JSONObject) jsonParser.parse(response);
-                String responseCode = (String) responseJSON.get(RESPONSE_CODE);
-                switch (responseCode) {
-                    case SUCCESSFUL_SEARCH_TASK_CODE:
-                        return (String) responseJSON.get(MEANING);
-                    default:
-                        String errorContent = (String) responseJSON.get(CONTENT);
-                        return getError(responseCode, errorContent);
-                }
+
+                String responseCode;
+                do {
+                    String response = client.receive();
+                    System.out.println("Client response received: " + response);
+                    JSONParser jsonParser = new JSONParser();
+                    JSONObject responseJSON = (JSONObject) jsonParser.parse(response);
+                    responseCode = (String) responseJSON.get(RESPONSE_CODE);
+                    switch (responseCode) {
+                        case SERVER_NOTIFICATION_TASK_CODE:
+                            String serverNotification = (String) responseJSON.get(CONTENT);
+                            dashboard.setText(serverNotification);
+                            break;
+                        case SUCCESSFUL_SEARCH_TASK_CODE:
+                            dashboard.setText((String) responseJSON.get(MEANING));
+                            break infiniteLoop;
+                        default:
+                            String errorContent = (String) responseJSON.get(CONTENT);
+                            dashboard.setText(getError(responseCode, errorContent));
+                            break infiniteLoop;
+                    }
+                } while (responseCode.equals(SERVER_NOTIFICATION_TASK_CODE));
 
             } catch (IOException e) {
                 if (!requireReconnection) {
                     requireReconnection = true;
                     continue;
                 }
-                return getError(ERROR_CONNECTION_CODE, ERROR_CONNECTION_CONTENT);
+                dashboard.setText(getError(ERROR_CONNECTION_CODE, ERROR_CONNECTION_CONTENT));
             } catch (ParseException e) {
-                return getError(INVALID_RESPONSE_CODE, INVALID_RESPONSE_CONTENT);
+                dashboard.setText(getError(INVALID_RESPONSE_CODE, INVALID_RESPONSE_CONTENT));
             }
         }
     }

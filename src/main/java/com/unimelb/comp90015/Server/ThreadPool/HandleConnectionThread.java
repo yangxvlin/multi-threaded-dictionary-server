@@ -39,6 +39,8 @@ public class HandleConnectionThread extends Thread {
             e.printStackTrace();
         }
 
+        // TODO #task queued notification
+
         this.dictionary = dictionary;
 
         this.threadPool = threadPool;
@@ -47,6 +49,7 @@ public class HandleConnectionThread extends Thread {
     @Override
     public void run() {
         System.out.println("client connected!");
+        // TODO task to be executed notification
 
         DataInputStream is = null;
         DataOutputStream os = null;

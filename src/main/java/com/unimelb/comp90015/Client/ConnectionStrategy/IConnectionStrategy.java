@@ -1,5 +1,6 @@
 package com.unimelb.comp90015.Client.ConnectionStrategy;
 
+import javax.swing.*;
 import java.io.IOException;
 
 /**
@@ -10,7 +11,7 @@ import java.io.IOException;
  **/
 
 public interface IConnectionStrategy {
-    String searchConnection(String word);
+    void searchConnection(String word, JTextArea dashboard);
 
     String addConnection(String word, String meaning);
 
