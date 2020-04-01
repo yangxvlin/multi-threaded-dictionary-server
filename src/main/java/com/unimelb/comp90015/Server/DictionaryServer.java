@@ -11,6 +11,7 @@ import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.Date;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Xulin Yang, 904904
@@ -27,6 +28,7 @@ public class DictionaryServer {
         int serverPort = Integer.parseInt(args[0]);
         String dictionaryFilePath = args[1];
         int threadPoolSize = Integer.parseInt(args[2]);
+        int inactiveWaitTime = Integer.parseInt(args[3]);  // second
 
         threadPool = new ThreadPool(threadPoolSize);
         System.out.println("Thread pool created.");
@@ -42,10 +44,9 @@ public class DictionaryServer {
             while (true) {
                 Socket client = server.accept();
 
-                HandleConnectionThread connectionThread = new HandleConnectionThread(client, dictionary, threadPool);
+                HandleConnectionThread connectionThread = new HandleConnectionThread(client, dictionary, threadPool, (int) TimeUnit.SECONDS.toMillis(inactiveWaitTime));
                 PriorityTaskThread connectionPriorityTaskThread = new PriorityTaskThread(connectionThread, 1, new Date());
                 threadPool.execute(connectionPriorityTaskThread);
-
             }
         } catch (IOException e) {
             e.printStackTrace();

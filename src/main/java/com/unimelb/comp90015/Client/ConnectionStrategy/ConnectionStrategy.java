@@ -32,6 +32,10 @@ public class ConnectionStrategy implements IConnectionStrategy {
         client = new Client(serverAddress, serverPort);
     }
 
+    public void reconnect() throws IOException {
+        client = new Client(serverAddress, serverPort);
+    }
+
     @Override
     public String searchConnection(String word) {
         if (word.isEmpty()) {
@@ -43,26 +47,38 @@ public class ConnectionStrategy implements IConnectionStrategy {
         requestJSON.addProperty(CONTENT, word);
         String request = requestJSON.toString();
 
-        try {
-            client.send(request);
-            System.out.println("Client request sent: " + request);
-            String response = client.receive();
-            System.out.println("Client response received: " + response);
-            JSONParser jsonParser = new JSONParser();
-            JSONObject responseJSON = (JSONObject) jsonParser.parse(response);
-            String responseCode = (String) responseJSON.get(RESPONSE_CODE);
-            switch (responseCode) {
-                case SUCCESSFUL_SEARCH_TASK_CODE:
-                    return (String) responseJSON.get(MEANING);
-                default:
-                    String errorContent = (String) responseJSON.get(CONTENT);
-                    return getError(responseCode, errorContent);
-            }
+        boolean requireReconnection = false;
 
-        } catch (IOException e) {
-            return getError(ERROR_CONNECTION_CODE, ERROR_CONNECTION_CONTENT);
-        } catch (ParseException e) {
-            return getError(INVALID_RESPONSE_CODE, INVALID_RESPONSE_CONTENT);
+        while (true) {
+            try {
+                if (requireReconnection) {
+                    reconnect();
+                }
+
+                client.send(request);
+                System.out.println("Client request sent: " + request);
+                String response = client.receive();
+                System.out.println("Client response received: " + response);
+                JSONParser jsonParser = new JSONParser();
+                JSONObject responseJSON = (JSONObject) jsonParser.parse(response);
+                String responseCode = (String) responseJSON.get(RESPONSE_CODE);
+                switch (responseCode) {
+                    case SUCCESSFUL_SEARCH_TASK_CODE:
+                        return (String) responseJSON.get(MEANING);
+                    default:
+                        String errorContent = (String) responseJSON.get(CONTENT);
+                        return getError(responseCode, errorContent);
+                }
+
+            } catch (IOException e) {
+                if (!requireReconnection) {
+                    requireReconnection = true;
+                    continue;
+                }
+                return getError(ERROR_CONNECTION_CODE, ERROR_CONNECTION_CONTENT);
+            } catch (ParseException e) {
+                return getError(INVALID_RESPONSE_CODE, INVALID_RESPONSE_CONTENT);
+            }
         }
     }
 

@@ -13,6 +13,7 @@ import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.Socket;
+import java.net.SocketTimeoutException;
 
 import static com.unimelb.comp90015.Constant.*;
 
@@ -30,8 +31,13 @@ public class HandleConnectionThread extends Thread {
 
     private ThreadPool threadPool;
 
-    public HandleConnectionThread(Socket client, IDictionary dictionary, ThreadPool threadPool) {
+    public HandleConnectionThread(Socket client, IDictionary dictionary, ThreadPool threadPool, int inactiveWaitTime) {
         this.client = client;
+        try {
+            this.client.setSoTimeout(inactiveWaitTime);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
         this.dictionary = dictionary;
 
@@ -56,7 +62,11 @@ public class HandleConnectionThread extends Thread {
             try {
                 requestString = is.readUTF();
             // client already disconnect
+            } catch (SocketTimeoutException e) {
+                System.out.println("client inactive, so disconnect");
+                break;
             } catch (IOException e) {
+                System.out.println("client already disconnect");
                 break;
             }
             System.out.println("    client's request: " + requestString);
@@ -89,6 +99,14 @@ public class HandleConnectionThread extends Thread {
                 default:
                     System.out.println("error unknown request task");
             }
+        }
+
+        try {
+            is.close();
+            os.close();
+            client.close();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 
