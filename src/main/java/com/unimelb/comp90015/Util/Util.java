@@ -1,4 +1,4 @@
-package com.unimelb.comp90015;
+package com.unimelb.comp90015.Util;
 
 /**
  * Xulin Yang, 904904
@@ -10,5 +10,9 @@ package com.unimelb.comp90015;
 public class Util {
     public static String getError(String errorCode, String errorContent) {
         return "Error(" + errorCode + "): " + errorContent;
+    }
+
+    public static boolean checkWrongVipPriority(int vipPriority) {
+        return vipPriority < 0 || vipPriority > 10;
     }
 }

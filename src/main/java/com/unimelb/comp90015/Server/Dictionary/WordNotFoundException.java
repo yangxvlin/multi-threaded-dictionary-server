@@ -1,7 +1,7 @@
 package com.unimelb.comp90015.Server.Dictionary;
 
-import static com.unimelb.comp90015.Constant.NO_SUCH_WORD_CONTENT;
-import static com.unimelb.comp90015.Constant.NO_SUCH_WORD_CODE;
+import static com.unimelb.comp90015.Util.Constant.NO_SUCH_WORD_CODE;
+import static com.unimelb.comp90015.Util.Constant.NO_SUCH_WORD_CONTENT;
 
 /**
  * Xulin Yang, 904904

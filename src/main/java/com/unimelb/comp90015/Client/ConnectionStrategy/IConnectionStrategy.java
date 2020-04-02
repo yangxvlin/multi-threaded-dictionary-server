@@ -11,11 +11,16 @@ import java.io.IOException;
  **/
 
 public interface IConnectionStrategy {
-    void searchConnection(String word, JTextArea dashboard);
 
-    String addConnection(String word, String meaning);
+    String generateSearchRequest(String word);
 
-    String deleteConnection(String word);
+    String generateAddRequest(String word, String meaning);
+
+    String generateDeleteRequest(String word);
+
+    void connect(String word, JTextArea dashboard, String request);
+
+    void connect(String word, String meaning, JTextArea dashboard, String request);
 
     void closeConnection() throws IOException;
 }

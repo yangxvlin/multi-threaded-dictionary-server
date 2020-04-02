@@ -1,4 +1,4 @@
-package com.unimelb.comp90015;
+package com.unimelb.comp90015.Util;
 
 /**
  * Xulin Yang, 904904
@@ -25,17 +25,13 @@ public class Constant {
 
     public static final String SEARCH_TASK_CODE = "1";
 
-    public static final String SUCCESSFUL_SEARCH_TASK_CODE = "100";
+    public static final String SUCCESSFUL_TASK_CODE = "-1";
 
     public static final String ADD_TASK_CODE = "2";
-
-    public static final String SUCCESSFUL_ADD_TASK_CODE = "200";
 
     public static final String SUCCESSFUL_ADD_TASK_CONTENT = "Successfully add new word to the dictionary!";
 
     public static final String DELETE_TASK_CODE = "3";
-
-    public static final String SUCCESSFUL_DELETE_TASK_CODE = "300";
 
     public static final String SUCCESSFUL_DELETE_TASK_CONTENT = "Successfully delete the word in the dictionary!";
 
@@ -44,6 +40,8 @@ public class Constant {
     public static final String CONTENT = "content";
 
     public static final String MEANING = "meaning";
+
+    public static final String VIP_PRIORITY = "vip";
 
     // *************************** Response ***************************
     public static final String RESPONSE_CODE = "response_code";
@@ -71,4 +69,21 @@ public class Constant {
     public static final String INVALID_RESPONSE_CONTENT = "Invalid response from the server!";
 
     public static final String INVALID_RESPONSE_CODE = "405";
+
+    public static final String ERROR_INVALID_MESSAGE_FORMAT_CONTENT = "Invalid message format received!";
+
+    public static final String ERROR_INVALID_MESSAGE_FORMAT_CODE = "409";
+
+    // *************************** Args ***************************
+    public static final String ERROR_INVALID_CLIENT_ARGS_CODE = "406";
+
+    public static final String ERROR_INVALID_CLIENT_ARGS_CONTENT = "Invalid command line arguments. Should be:\n<Server address> <Port number> <VIP level>";
+
+    public static final String ERROR_INVALID_PORT_NUMBER_CODE = "407";
+
+    public static final String ERROR_INVALID_PORT_NUMBER_CONTENT = "The port number should be an integer between 49152-65535.";
+
+    public static final String ERROR_INVALID_VIP_NUMBER_CODE = "408";
+
+    public static final String ERROR_INVALID_VIP_NUMBER_CONTENT = "The VIP level number should be an integer between 0-10";
 }

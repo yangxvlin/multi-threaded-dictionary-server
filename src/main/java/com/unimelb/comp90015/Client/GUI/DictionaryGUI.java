@@ -1,4 +1,4 @@
-package com.unimelb.comp90015.Client;
+package com.unimelb.comp90015.Client.GUI;
 
 import com.unimelb.comp90015.Client.ConnectionStrategy.IConnectionStrategy;
 
@@ -9,7 +9,7 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.IOException;
 
-import static com.unimelb.comp90015.Constant.*;
+import static com.unimelb.comp90015.Util.Constant.APP_ICON_PATH;
 import static java.awt.Component.CENTER_ALIGNMENT;
 
 /**
@@ -93,7 +93,7 @@ public class DictionaryGUI {
         btnSearch.setBounds(810, 260, 100, 25);
         btnSearch.addActionListener(e -> {
             String word = wordTextField.getText();
-            connectionStrategy.searchConnection(word, this.dashboard);
+            connectionStrategy.connect(word, dashboard, connectionStrategy.generateSearchRequest(word));
         });
         panel.add(btnSearch);
     }
@@ -117,7 +117,7 @@ public class DictionaryGUI {
         btnRemove.setBounds(500, 290, 120, 25);
         btnRemove.addActionListener(e -> {
             String word = wordTextField.getText();
-            this.dashboard.setText(connectionStrategy.deleteConnection(word));
+            connectionStrategy.connect(word, dashboard, connectionStrategy.generateDeleteRequest(word));
         });
         panel.add(btnRemove);
     }

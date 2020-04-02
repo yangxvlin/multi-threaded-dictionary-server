@@ -1,7 +1,7 @@
 package com.unimelb.comp90015.Server.Dictionary;
 
-import static com.unimelb.comp90015.Constant.DUPLICATE_WORD_CODE;
-import static com.unimelb.comp90015.Constant.DUPLICATE_WORD_CONTENT;
+import static com.unimelb.comp90015.Util.Constant.DUPLICATE_WORD_CODE;
+import static com.unimelb.comp90015.Util.Constant.DUPLICATE_WORD_CONTENT;
 
 /**
  * Xulin Yang, 904904
@@ -12,7 +12,6 @@ import static com.unimelb.comp90015.Constant.DUPLICATE_WORD_CONTENT;
 
 public class DuplicateWordException extends Exception {
     public DuplicateWordException() {
-
     }
 
     @Override

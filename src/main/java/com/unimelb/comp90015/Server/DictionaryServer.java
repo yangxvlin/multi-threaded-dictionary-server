@@ -5,13 +5,17 @@ import com.unimelb.comp90015.Server.Dictionary.SimpleDictionary;
 import com.unimelb.comp90015.Server.ThreadPool.HandleConnectionThread;
 import com.unimelb.comp90015.Server.ThreadPool.PriorityTaskThread;
 import com.unimelb.comp90015.Server.ThreadPool.ThreadPool;
+import com.unimelb.comp90015.Util.ClientSocket;
+import com.unimelb.comp90015.Util.InvalidMessageException;
+import com.unimelb.comp90015.Util.InvalidVIPPriorityException;
 
 import javax.net.ServerSocketFactory;
 import java.io.IOException;
 import java.net.ServerSocket;
-import java.net.Socket;
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
+
+import static com.unimelb.comp90015.Util.Util.getError;
 
 /**
  * Xulin Yang, 904904
@@ -42,14 +46,18 @@ public class DictionaryServer {
             System.out.println("Server created.");
 
             while (true) {
-                Socket client = server.accept();
+                ClientSocket clientSocket = new ClientSocket(server.accept(), (int) TimeUnit.SECONDS.toMillis(inactiveWaitTime));
 
-                HandleConnectionThread connectionThread = new HandleConnectionThread(client, dictionary, threadPool, (int) TimeUnit.SECONDS.toMillis(inactiveWaitTime));
-                PriorityTaskThread connectionPriorityTaskThread = new PriorityTaskThread(connectionThread, 1, new Date());
+                HandleConnectionThread connectionThread = new HandleConnectionThread(clientSocket, dictionary, threadPool);
+                PriorityTaskThread connectionPriorityTaskThread = new PriorityTaskThread(connectionThread, clientSocket.getVipPriority(), new Date());
                 threadPool.execute(connectionPriorityTaskThread);
             }
         } catch (IOException e) {
             e.printStackTrace();
+        } catch (InvalidMessageException e) {
+            System.out.println(getError(e.getCode(), e.getMessage()));
+        } catch (InvalidVIPPriorityException e) {
+            System.out.println(getError(e.getCode(), e.getMessage()));
         }
 
         threadPool.shutdown();

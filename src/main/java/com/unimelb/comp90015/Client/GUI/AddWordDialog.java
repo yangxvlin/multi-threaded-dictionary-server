@@ -1,4 +1,4 @@
-package com.unimelb.comp90015.Client;
+package com.unimelb.comp90015.Client.GUI;
 
 import javax.swing.*;
 import java.awt.*;
@@ -72,11 +72,10 @@ public class AddWordDialog extends JFrame {
 
                 switch (confirmation) {
                     case JOptionPane.YES_OPTION:
-                        // TODO submit to server
+                        // submit to server
                         String wordToAdd = wordTextField.getText();
                         String meaning = meaningDisplay.getText();
-                        String response = parent.getConnectionStrategy().addConnection(wordToAdd, meaning);
-                        parent.getDashboard().setText(response);
+                        parent.getConnectionStrategy().connect(wordToAdd, meaning, parent.getDashboard(), parent.getConnectionStrategy().generateAddRequest(wordToAdd, meaning));
 
                         wordMeanings.clear();
                         meaningDisplay.setText("");

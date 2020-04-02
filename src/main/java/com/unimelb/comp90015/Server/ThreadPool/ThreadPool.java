@@ -48,6 +48,10 @@ public class ThreadPool {
         }
     }
 
+    public synchronized int getQueueSize() {
+        return queue.size();
+    }
+
     private class WorkerThread extends Thread {
         public void run() {
             PriorityTaskThread task;

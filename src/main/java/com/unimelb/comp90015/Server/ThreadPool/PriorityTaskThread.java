@@ -48,9 +48,9 @@ public class PriorityTaskThread extends Thread implements Comparable<PriorityTas
         } else if (this.priority > other.priority) {
             return 1;
         } else if (this.allocatedTime.before(other.allocatedTime)) {
-            return -1;
-        } else if (this.allocatedTime.after(other.allocatedTime)) {
             return 1;
+        } else if (this.allocatedTime.after(other.allocatedTime)) {
+            return -1;
         }
 
         return 0;
