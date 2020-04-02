@@ -15,7 +15,10 @@ import java.net.ServerSocket;
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
 
-import static com.unimelb.comp90015.Util.Util.getError;
+import static com.unimelb.comp90015.Util.Constant.ERROR_INVALID_SERVER_ARGS_CODE;
+import static com.unimelb.comp90015.Util.Constant.ERROR_INVALID_SERVER_ARGS_CONTENT;
+import static com.unimelb.comp90015.Util.Util.*;
+import static com.unimelb.comp90015.Util.Util.serverPortError;
 
 /**
  * Xulin Yang, 904904
@@ -26,13 +29,18 @@ import static com.unimelb.comp90015.Util.Util.getError;
 
 public class DictionaryServer {
 
+    private static int serverPort;
+    private static String dictionaryFilePath;
+    private static int threadPoolSize;
+    /**
+     * unit: second
+     */
+    private static int inactiveWaitTime;
+
     private static ThreadPool threadPool;
 
     public static void main(String[] args) {
-        int serverPort = Integer.parseInt(args[0]);
-        String dictionaryFilePath = args[1];
-        int threadPoolSize = Integer.parseInt(args[2]);
-        int inactiveWaitTime = Integer.parseInt(args[3]);  // second
+        checkArgs(args);
 
         threadPool = new ThreadPool(threadPoolSize);
         System.out.println("Thread pool created.");
@@ -61,5 +69,40 @@ public class DictionaryServer {
         }
 
         threadPool.shutdown();
+    }
+
+    private static void checkArgs(String[] args) {
+        if (args.length < 4) {
+            popupErrorDialog(ERROR_INVALID_SERVER_ARGS_CODE, ERROR_INVALID_SERVER_ARGS_CONTENT);
+        }
+
+        try {
+            serverPort = Integer.parseInt(args[0]);
+            if (checkWrongServerPort(serverPort)) {
+                serverPortError();
+            }
+        } catch (NumberFormatException e) {
+            serverPortError();
+        }
+
+        dictionaryFilePath = args[1];
+
+        try {
+            threadPoolSize = Integer.parseInt(args[2]);
+            if (checkWrongThreadPoolSize(threadPoolSize)) {
+                threadPoolSizeError();
+            }
+        } catch (NumberFormatException e) {
+            threadPoolSizeError();
+        }
+
+        try {
+            inactiveWaitTime = Integer.parseInt(args[3]);
+            if (checkWrongInactiveTime(inactiveWaitTime)) {
+                inactiveTimeError();
+            }
+        } catch (NumberFormatException e) {
+            inactiveTimeError();
+        }
     }
 }

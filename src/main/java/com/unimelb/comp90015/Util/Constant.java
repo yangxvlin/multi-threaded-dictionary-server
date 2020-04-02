@@ -86,4 +86,24 @@ public class Constant {
     public static final String ERROR_INVALID_VIP_NUMBER_CODE = "408";
 
     public static final String ERROR_INVALID_VIP_NUMBER_CONTENT = "The VIP level number should be an integer between 0-10";
+
+    public static final String ERROR_INVALID_SERVER_ARGS_CODE = "410";
+
+    public static final String ERROR_INVALID_SERVER_ARGS_CONTENT = "Invalid command line arguments. Should be:\n<Port number> <Dictionary file path> <Thread pool size> <Inactive time>";
+
+    public static final String ERROR_INVALID_THREAD_POOL_SIZE_CODE = "411";
+
+    public static final String ERROR_INVALID_THREAD_POOL_SIZE_CONTENT = "The thread pool size should be an integer between 1-" + Integer.toString(Integer.MAX_VALUE);
+
+    public static final String ERROR_INVALID_INACTIVE_TIME_CODE = "412";
+
+    public static final String ERROR_INVALID_INACTIVE_TIME_CONTENT = "The inactive time should be an integer with second as unit between 1-1000";
+
+    public static final String ERROR_INVALID_DICTIONARY_PATH_CODE = "413";
+
+    public static final String ERROR_INVALID_DICTIONARY_PATH_CONTENT = "Can't read dictionary from given path!";
+
+    public static final String ERROR_INVALID_DICTIONARY_FORMAT_CODE = "414";
+
+    public static final String ERROR_INVALID_DICTIONARY_FORMAT_CONTENT = "The dictionary should be json formatted!";
 }

@@ -8,8 +8,7 @@ import javax.swing.*;
 import java.io.IOException;
 
 import static com.unimelb.comp90015.Util.Constant.*;
-import static com.unimelb.comp90015.Util.Util.checkWrongVipPriority;
-import static com.unimelb.comp90015.Util.Util.getError;
+import static com.unimelb.comp90015.Util.Util.*;
 
 /**
  * Xulin Yang, 904904
@@ -34,31 +33,20 @@ public class DictionaryClient {
             connectionStrategy = new ConnectionStrategy(serverAddress, serverPort, vipPriority);
             DictionaryGUI gui = new DictionaryGUI(APP_NAME, connectionStrategy);
         } catch (IOException e) {
-            JOptionPane.showConfirmDialog(
-                    null,
-                    getError(ERROR_CONNECTION_CODE, ERROR_CONNECTION_CONTENT),
-                    "Error",
-                    JOptionPane.OK_CANCEL_OPTION
-            );
+            popupErrorDialog(ERROR_CONNECTION_CODE, ERROR_CONNECTION_CONTENT);
         }
 
     }
 
     private static void checkArgs(String[] args) {
         if (args.length < 3) {
-            JOptionPane.showConfirmDialog(
-                null,
-                getError(ERROR_INVALID_CLIENT_ARGS_CODE, ERROR_INVALID_CLIENT_ARGS_CONTENT),
-                "Error",
-                JOptionPane.OK_CANCEL_OPTION
-            );
-            System.exit(1);
+            popupErrorDialog(ERROR_INVALID_CLIENT_ARGS_CODE, ERROR_INVALID_CLIENT_ARGS_CONTENT);
         } else {
             serverAddress = args[0];
 
             try {
                 serverPort = Integer.parseInt(args[1]);
-                if (checkWrongServerPort()) {
+                if (checkWrongServerPort(serverPort)) {
                     serverPortError();
                 }
             } catch (NumberFormatException e) {
@@ -76,27 +64,7 @@ public class DictionaryClient {
         }
     }
 
-    private static boolean checkWrongServerPort() {
-        return serverPort < 49152 || serverPort > 65535;
-    }
-
-    private static void serverPortError() {
-        JOptionPane.showConfirmDialog(
-                null,
-                getError(ERROR_INVALID_PORT_NUMBER_CODE, ERROR_INVALID_PORT_NUMBER_CONTENT),
-                "Error",
-                JOptionPane.OK_CANCEL_OPTION
-        );
-        System.exit(1);
-    }
-
     private static void vipPriorityError() {
-        JOptionPane.showConfirmDialog(
-                null,
-                getError(ERROR_INVALID_VIP_NUMBER_CODE, ERROR_INVALID_VIP_NUMBER_CONTENT),
-                "Error",
-                JOptionPane.OK_CANCEL_OPTION
-        );
-        System.exit(1);
+        popupErrorDialog(ERROR_INVALID_VIP_NUMBER_CODE, ERROR_INVALID_VIP_NUMBER_CONTENT);
     }
 }

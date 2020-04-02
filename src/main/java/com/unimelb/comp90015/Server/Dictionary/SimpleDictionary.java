@@ -6,6 +6,9 @@ import org.json.simple.parser.ParseException;
 
 import java.io.*;
 
+import static com.unimelb.comp90015.Util.Constant.*;
+import static com.unimelb.comp90015.Util.Util.popupErrorDialog;
+
 /**
  * Xulin Yang, 904904
  *
@@ -28,8 +31,10 @@ public class SimpleDictionary implements IDictionary {
             //Read JSON file
             dictionary = (JSONObject) jsonParser.parse(reader);
 
-        } catch (IOException | ParseException e) {
-            e.printStackTrace();
+        } catch (ParseException e) {
+            popupErrorDialog(ERROR_INVALID_DICTIONARY_FORMAT_CODE, ERROR_INVALID_DICTIONARY_FORMAT_CONTENT);
+        } catch (IOException e) {
+            popupErrorDialog(ERROR_INVALID_DICTIONARY_PATH_CODE, ERROR_INVALID_DICTIONARY_PATH_CONTENT);
         }
     }
 

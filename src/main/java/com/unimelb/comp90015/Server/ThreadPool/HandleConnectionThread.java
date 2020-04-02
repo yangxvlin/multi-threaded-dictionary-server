@@ -5,15 +5,11 @@ import com.unimelb.comp90015.Server.Dictionary.DuplicateWordException;
 import com.unimelb.comp90015.Server.Dictionary.IDictionary;
 import com.unimelb.comp90015.Server.Dictionary.WordNotFoundException;
 import com.unimelb.comp90015.Util.ClientSocket;
-import com.unimelb.comp90015.Util.InvalidMessageException;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
 import java.io.IOException;
-import java.net.Socket;
 import java.net.SocketTimeoutException;
 
 import static com.unimelb.comp90015.Util.Constant.*;
