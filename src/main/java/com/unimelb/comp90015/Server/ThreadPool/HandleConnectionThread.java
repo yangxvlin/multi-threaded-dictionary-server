@@ -19,14 +19,23 @@ import static com.unimelb.comp90015.Util.Util.getError;
  * Xulin Yang, 904904
  *
  * @create 2020-03-26 22:01
- * description:
+ * description: the thread to execute client's request at server
  **/
 
 public class HandleConnectionThread extends Thread {
+    /**
+     * client's socket
+     */
     private ClientSocket client;
 
+    /**
+     * dictionary object
+     */
     private IDictionary dictionary;
 
+    /**
+     * thread pool object used to get runtime queued tasks number
+     */
     private ThreadPool threadPool;
 
     public HandleConnectionThread(ClientSocket client, IDictionary dictionary, ThreadPool threadPool) throws IOException {
@@ -36,7 +45,7 @@ public class HandleConnectionThread extends Thread {
 
         this.threadPool = threadPool;
 
-        // task queued notification
+        // task queued notification to client
         sendRequestQueued();
     }
 
@@ -48,7 +57,10 @@ public class HandleConnectionThread extends Thread {
             // task to be executed notification
             sendRequestExecuted();
 
+            // continuously interact with the client
             while (true) {
+
+                // receive request form client
                 String requestString = null;
                 try {
                     requestString = client.receive();
@@ -61,8 +73,8 @@ public class HandleConnectionThread extends Thread {
                     break;
                 }
                 System.out.println("    client's request: " + requestString);
-                System.out.println(requestString);
 
+                // process client's request
                 JSONParser jsonParser = new JSONParser();
                 JSONObject requestJSON = null;
                 try {
@@ -70,20 +82,20 @@ public class HandleConnectionThread extends Thread {
                 } catch (ParseException e) {
                     System.out.println(getError(ERROR_INVALID_MESSAGE_FORMAT_CODE, ERROR_INVALID_MESSAGE_FORMAT_CONTENT));
                 }
-
                 String taskCode = (String) requestJSON.get(TASK_CODE);
                 String word = (String) requestJSON.get(CONTENT);
 
+                // response to various task
                 switch (taskCode) {
                     case SEARCH_TASK_CODE:
-                        search(dictionary, word);
+                        search(word);
                         break;
                     case ADD_TASK_CODE:
                         String meaning = (String) requestJSON.get(MEANING);
-                        add(dictionary, word, meaning);
+                        add(word, meaning);
                         break;
                     case DELETE_TASK_CODE:
-                        remove(dictionary, word);
+                        remove(word);
                         break;
                     default:
                         System.out.println("error unknown request task");
@@ -96,6 +108,10 @@ public class HandleConnectionThread extends Thread {
         }
     }
 
+    /**
+     * notify client's task is queued and number of tasks queued in thread pool
+     * @throws IOException io exception
+     */
     private void sendRequestQueued() throws IOException {
         JsonObject jsonObject = new JsonObject();
         jsonObject.addProperty(RESPONSE_CODE, SERVER_NOTIFICATION_TASK_CODE);
@@ -104,6 +120,10 @@ public class HandleConnectionThread extends Thread {
         client.send(result);
     }
 
+    /**
+     * notify client's task is under execution
+     * @throws IOException io exception
+     */
     private void sendRequestExecuted() throws IOException {
         JsonObject jsonObject = new JsonObject();
         jsonObject.addProperty(RESPONSE_CODE, SERVER_NOTIFICATION_TASK_CODE);
@@ -112,7 +132,12 @@ public class HandleConnectionThread extends Thread {
         client.send(result);
     }
 
-    private void search(IDictionary dictionary, String word) throws IOException {
+    /**
+     * send successful search word's meaning or error message to client
+     * @param word word to be searched
+     * @throws IOException io exception
+     */
+    private void search(String word) throws IOException {
         String result;
         try {
             JsonObject jsonObject = new JsonObject();
@@ -130,7 +155,13 @@ public class HandleConnectionThread extends Thread {
         client.send(result);
     }
 
-    private void add(IDictionary dictionary, String word, String meaning) throws IOException {
+    /**
+     * send successful add word or error message to client
+     * @param word    word to be added
+     * @param meaning word's meaning
+     * @throws IOException io exception
+     */
+    private void add(String word, String meaning) throws IOException {
         String result;
         try {
             dictionary.add(word, meaning);
@@ -148,7 +179,12 @@ public class HandleConnectionThread extends Thread {
         client.send(result);
     }
 
-    private void remove(IDictionary dictionary, String word) throws IOException {
+    /**
+     * send successful delete word or error message to client
+     * @param word word to be removed
+     * @throws IOException io exception
+     */
+    private void remove(String word) throws IOException {
         String result;
         try {
             dictionary.remove(word);

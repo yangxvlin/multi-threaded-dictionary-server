@@ -6,14 +6,23 @@ import java.util.Date;
  * Xulin Yang, 904904
  *
  * @create 2020-03-23 23:19
- * description:
+ * description: Thread to be used in PriorityBlockingQueue to wrap various task thread
  **/
 
 public class PriorityTaskThread extends Thread implements Comparable<PriorityTaskThread> {
+    /**
+     * task thread to be executed
+     */
     private Thread task;
 
+    /**
+     * priority number
+     */
     private int priority;
 
+    /**
+     * task's creation time
+     */
     private Date allocatedTime;
 
     public PriorityTaskThread(Thread task, int priority, Date allocatedTime) {
