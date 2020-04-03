@@ -104,7 +104,7 @@ public class HandleConnectionThread extends Thread {
 
             client.close();
         } catch (IOException e) {
-            e.printStackTrace();
+            System.out.println("IOException.");
         }
     }
 

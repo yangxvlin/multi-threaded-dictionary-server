@@ -4,7 +4,6 @@ import com.unimelb.comp90015.Client.ConnectionStrategy.ConnectionStrategy;
 import com.unimelb.comp90015.Client.ConnectionStrategy.IConnectionStrategy;
 import com.unimelb.comp90015.Client.GUI.DictionaryGUI;
 
-import javax.swing.*;
 import java.io.IOException;
 
 import static com.unimelb.comp90015.Util.Constant.*;
@@ -19,10 +18,19 @@ import static com.unimelb.comp90015.Util.Util.*;
 
 public class DictionaryClient {
 
+    /**
+     * server's address
+     */
     private static String serverAddress;
 
+    /**
+     * server's port number
+     */
     private static int serverPort;
 
+    /**
+     * client's VIP number
+     */
     private static int vipPriority;
 
     public static void main(String[] args) {
@@ -30,14 +38,21 @@ public class DictionaryClient {
 
         IConnectionStrategy connectionStrategy = null;
         try {
+            // establish connection to server
             connectionStrategy = new ConnectionStrategy(serverAddress, serverPort, vipPriority);
-            DictionaryGUI gui = new DictionaryGUI(APP_NAME, connectionStrategy);
+            // start GUI
+            DictionaryGUI gui = new DictionaryGUI(APP_NAME+"VIP:lv-"+vipPriority, connectionStrategy);
         } catch (IOException e) {
+            // connection to server error
             popupErrorDialog(ERROR_CONNECTION_CODE, ERROR_CONNECTION_CONTENT);
         }
 
     }
 
+    /**
+     * check whether client's inputs are correct
+     * @param args command line arguments
+     */
     private static void checkArgs(String[] args) {
         if (args.length < 3) {
             popupErrorDialog(ERROR_INVALID_CLIENT_ARGS_CODE, ERROR_INVALID_CLIENT_ARGS_CONTENT);
@@ -64,6 +79,9 @@ public class DictionaryClient {
         }
     }
 
+    /**
+     * invoke dialog for vip priority number error
+     */
     private static void vipPriorityError() {
         popupErrorDialog(ERROR_INVALID_VIP_NUMBER_CODE, ERROR_INVALID_VIP_NUMBER_CONTENT);
     }

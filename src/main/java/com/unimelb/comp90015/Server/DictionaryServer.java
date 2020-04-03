@@ -79,7 +79,7 @@ public class DictionaryServer {
             }
 
         } catch (IOException e) {
-            e.printStackTrace();
+            System.out.println("IOException.");
         } catch (InvalidMessageException e) {
             System.out.println(getError(e.getCode(), e.getMessage()));
         } catch (InvalidVIPPriorityException e) {
@@ -91,7 +91,7 @@ public class DictionaryServer {
     }
 
     /**
-     * check whether client's inputs are correct
+     * check whether server's inputs are correct
      * @param args command line arguments
      */
     private static void checkArgs(String[] args) {
