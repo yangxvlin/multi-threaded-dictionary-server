@@ -16,7 +16,7 @@ public class Constant {
     /**
      * the path to the application icon
      */
-    public static final String APP_ICON_PATH = "./src/main/java/com/unimelb/comp90015/asset/dictionary.jpg";
+    public static final String APP_ICON_PATH = "/asset/dictionary.jpg";
 
     // *************************** Task *****************************
     /**

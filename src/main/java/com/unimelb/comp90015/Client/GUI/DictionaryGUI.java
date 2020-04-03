@@ -100,7 +100,7 @@ public class DictionaryGUI {
      * @param panel panel
      */
     private void placeIcons(JPanel panel) {
-        ImageIcon icon = new ImageIcon(APP_ICON_PATH);
+        ImageIcon icon = new ImageIcon(getClass().getResource(APP_ICON_PATH));
         JLabel label = new JLabel(icon);
         label.setAlignmentX(CENTER_ALIGNMENT);
         label.setBounds(350, 0, 255, 255);
