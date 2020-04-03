@@ -60,21 +60,31 @@ public class Util {
     }
 
     /**
-     * @param size
-     * @return
+     * @param size the thread pool size
+     * @return true if thread pool size is in 1-Integer.MAX_VALUE; false otherwise
      */
     public static boolean checkWrongThreadPoolSize(int size) {
         return size <= 0 || size >= Integer.MAX_VALUE;
     }
 
+    /**
+     * invoke dialog for thread pool size error
+     */
     public static void threadPoolSizeError() {
         popupErrorDialog(ERROR_INVALID_THREAD_POOL_SIZE_CODE, ERROR_INVALID_THREAD_POOL_SIZE_CONTENT);
     }
 
+    /**
+     * @param second inactive thread waiting time
+     * @return true if time is between 1-1000 second; false otherwise
+     */
     public static boolean checkWrongInactiveTime(int second) {
         return second < 1 || second > 1000;
     }
 
+    /**
+     * invoke dialog for inactive time error
+     */
     public static void inactiveTimeError() {
         popupErrorDialog(ERROR_INVALID_INACTIVE_TIME_CODE, ERROR_INVALID_INACTIVE_TIME_CONTENT);
     }

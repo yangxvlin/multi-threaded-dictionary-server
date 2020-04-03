@@ -6,7 +6,7 @@ import static com.unimelb.comp90015.Util.Constant.*;
  * Xulin Yang, 904904
  *
  * @create 2020-04-03 0:10
- * description:
+ * description: the exception for invalid user vip number
  **/
 
 public class InvalidVIPPriorityException extends Exception {
@@ -15,6 +15,9 @@ public class InvalidVIPPriorityException extends Exception {
         return ERROR_INVALID_VIP_NUMBER_CONTENT;
     }
 
+    /**
+     * @return error index
+     */
     public String getCode() {
         return ERROR_INVALID_VIP_NUMBER_CODE;
     }
