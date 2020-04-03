@@ -13,7 +13,8 @@ import static com.unimelb.comp90015.Util.Util.*;
  * Xulin Yang, 904904
  *
  * @create 2020-03-23 15:19
- * description:
+ * description: the dictionary application for user to search, add, delete word
+ *              to the dictionary server with GUI
  **/
 
 public class DictionaryClient {
