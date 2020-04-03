@@ -24,42 +24,60 @@ import static com.unimelb.comp90015.Util.Util.serverPortError;
  * Xulin Yang, 904904
  *
  * @create 2020-03-23 15:19
- * description:
+ * description: the multi-threaded server with thread-pool architecture, thread
+ *              per connection with a period of inactive time
  **/
 
 public class DictionaryServer {
-
-    private static int serverPort;
-    private static String dictionaryFilePath;
-    private static int threadPoolSize;
     /**
-     * unit: second
+     * the server's port number
+     */
+    private static int serverPort;
+
+    /**
+     * dictionary file's path on dist
+     */
+    private static String dictionaryFilePath;
+
+    /**
+     * thread pool's size
+     */
+    private static int threadPoolSize;
+
+    /**
+     * client's connection's inactive waiting time; unit: second
      */
     private static int inactiveWaitTime;
 
-    private static ThreadPool threadPool;
-
     public static void main(String[] args) {
+        // check inputs
         checkArgs(args);
 
-        threadPool = new ThreadPool(threadPoolSize);
+        // create thread pool
+        ThreadPool threadPool = new ThreadPool(threadPoolSize);
         System.out.println("Thread pool created.");
+
+        // create dictionary from disk
         IDictionary dictionary = new SimpleDictionary(dictionaryFilePath);
         System.out.println("Dictionary read.");
 
+        // create server
         ServerSocketFactory factory = ServerSocketFactory.getDefault();
-
         try(ServerSocket server = factory.createServerSocket(serverPort)) {
-
             System.out.println("Server created.");
 
             while (true) {
+                // accept client's connection and receive VIP number
                 ClientSocket clientSocket = new ClientSocket(server.accept(), (int) TimeUnit.SECONDS.toMillis(inactiveWaitTime));
 
+                // create thread
                 HandleConnectionThread connectionThread = new HandleConnectionThread(clientSocket, dictionary, threadPool);
+
+                // add thread to thread pool
                 PriorityTaskThread connectionPriorityTaskThread = new PriorityTaskThread(connectionThread, clientSocket.getVipPriority(), new Date());
                 threadPool.execute(connectionPriorityTaskThread);
             }
+
         } catch (IOException e) {
             e.printStackTrace();
         } catch (InvalidMessageException e) {
@@ -68,9 +86,14 @@ public class DictionaryServer {
             System.out.println(getError(e.getCode(), e.getMessage()));
         }
 
+        // close thread pool
         threadPool.shutdown();
     }
 
+    /**
+     * check whether client's inputs are correct
+     * @param args command line arguments
+     */
     private static void checkArgs(String[] args) {
         if (args.length < 4) {
             popupErrorDialog(ERROR_INVALID_SERVER_ARGS_CODE, ERROR_INVALID_SERVER_ARGS_CONTENT);
