@@ -13,12 +13,18 @@ import static com.unimelb.comp90015.Util.Util.popupErrorDialog;
  * Xulin Yang, 904904
  *
  * @create 2020-03-24 0:15
- * description:
+ * description: the simple instance of dictionary with the ability to search, add, delete, save
  **/
 
 public class SimpleDictionary implements IDictionary {
+    /**
+     * key, value pair for dictionary
+     */
     private JSONObject dictionary;
 
+    /**
+     * dictionary file path on disk
+     */
     private String dictionaryFilePath;
 
     public SimpleDictionary(String dictionaryFilePath) {
@@ -38,6 +44,11 @@ public class SimpleDictionary implements IDictionary {
         }
     }
 
+    /**
+     * @param word the word to be searched
+     * @return meaning of the word
+     * @throws WordNotFoundException the word not existing in the dictionary
+     */
     @Override
     public synchronized String search(String word) throws WordNotFoundException {
         if (dictionary.containsKey(word)) {
@@ -47,6 +58,10 @@ public class SimpleDictionary implements IDictionary {
         }
     }
 
+    /**
+     * @param word word the word to be deleted
+     * @throws WordNotFoundException the word not existing in the dictionary
+     */
     @Override
     public synchronized void remove(String word) throws WordNotFoundException {
         if (dictionary.containsKey(word)) {
@@ -57,6 +72,11 @@ public class SimpleDictionary implements IDictionary {
         }
     }
 
+    /**
+     * @param word    the word to be added
+     * @param meaning the word's meaning
+     * @throws DuplicateWordException the word already existing in the dictionary
+     */
     @Override
     public synchronized void add(String word, String meaning) throws DuplicateWordException {
         if (dictionary.containsKey(word)) {
@@ -67,6 +87,9 @@ public class SimpleDictionary implements IDictionary {
         }
     }
 
+    /**
+     * save the dictionary to disk
+     */
     @Override
     public synchronized void save() {
         File f= new File(dictionaryFilePath);
