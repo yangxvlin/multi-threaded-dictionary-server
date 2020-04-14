@@ -11,6 +11,8 @@ import java.io.IOException;
 
 import static com.unimelb.comp90015.Util.Constant.*;
 import static com.unimelb.comp90015.Util.Util.getError;
+import static com.unimelb.comp90015.Util.Util.stringIsAlnum;
+import static com.unimelb.comp90015.Util.Util.stringIsAlpha;
 
 /**
  * Xulin Yang, 904904
@@ -101,6 +103,10 @@ public class ConnectionStrategy implements IConnectionStrategy {
     public void connect(String word, JTextArea dashboard, String request) {
         if (word.isEmpty()) {
             dashboard.setText(getError(EMPTY_WORD_CODE, EMPTY_WORD_CONTENT));
+        } else if (word.length() > MAX_WORD_LENGTH) {
+            dashboard.setText(getError(ERROR_WORD_TOO_LONG_CODE, ERROR_WORD_TOO_LONG_CONTENT));
+        } else if (!stringIsAlpha(word)) {
+            dashboard.setText(getError(ERROR_BAD_WORD_INPUT_CODE, ERROR_BAD_WORD_INPUT_CONTENT));
         } else {
             connect(dashboard, request);
         }
@@ -116,8 +122,15 @@ public class ConnectionStrategy implements IConnectionStrategy {
     public void connect(String word, String meaning, JTextArea dashboard, String request) {
         if (word.isEmpty()) {
             dashboard.setText(getError(EMPTY_WORD_CODE, EMPTY_WORD_CONTENT));
+        } else if (word.length() > MAX_WORD_LENGTH) {
+            dashboard.setText(getError(ERROR_WORD_TOO_LONG_CODE, ERROR_WORD_TOO_LONG_CONTENT));
         } else if (meaning.isEmpty()) {
             dashboard.setText(getError(EMPTY_MEANING_CODE, EMPTY_MEANING_CONTENT));
+        } else if (!stringIsAlpha(word)) {
+            dashboard.setText(getError(ERROR_BAD_WORD_INPUT_CODE, ERROR_BAD_WORD_INPUT_CONTENT));
+        } else if (!stringIsAlnum(meaning)) {
+            System.out.println(meaning);
+            dashboard.setText(getError(ERROR_BAD_MEANING_INPUT_CODE, ERROR_BAD_MEANING_INPUT_CONTENT));
         } else {
             connect(dashboard, request);
         }
@@ -161,14 +174,18 @@ public class ConnectionStrategy implements IConnectionStrategy {
                     switch (responseCode) {
                         case SERVER_NOTIFICATION_TASK_CODE:
                             String serverNotification = (String) responseJSON.get(CONTENT);
+                            System.out.println(serverNotification);
                             dashboard.append(serverNotification + "\n");
+                            dashboard.update(dashboard.getGraphics());
                             break;
                         case SUCCESSFUL_TASK_CODE:
                             dashboard.append((String) responseJSON.get(CONTENT));
+                            dashboard.update(dashboard.getGraphics());
                             break infiniteLoop;
                         default:
                             String errorContent = (String) responseJSON.get(CONTENT);
-                            dashboard.setText(getError(responseCode, errorContent));
+                            dashboard.append(getError(responseCode, errorContent));
+                            dashboard.update(dashboard.getGraphics());
                             break infiniteLoop;
                     }
                 } while (responseCode.equals(SERVER_NOTIFICATION_TASK_CODE));
@@ -181,8 +198,10 @@ public class ConnectionStrategy implements IConnectionStrategy {
                     continue;
                 }
                 dashboard.setText(getError(ERROR_CONNECTION_CODE, ERROR_CONNECTION_CONTENT));
+                break infiniteLoop;
             } catch (ParseException e) {
                 dashboard.setText(getError(INVALID_RESPONSE_CODE, INVALID_RESPONSE_CONTENT));
+                break infiniteLoop;
             }
         }
     }

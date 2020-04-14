@@ -9,11 +9,11 @@ import java.util.Date;
  * description: Thread to be used in PriorityBlockingQueue to wrap various task thread
  **/
 
-public class PriorityTaskThread extends Thread implements Comparable<PriorityTaskThread> {
+public class PriorityTaskThread implements Runnable, Comparable<PriorityTaskThread> {
     /**
      * task thread to be executed
      */
-    private Thread task;
+    private Runnable task;
 
     /**
      * priority number
@@ -25,7 +25,7 @@ public class PriorityTaskThread extends Thread implements Comparable<PriorityTas
      */
     private Date allocatedTime;
 
-    public PriorityTaskThread(Thread task, int priority, Date allocatedTime) {
+    public PriorityTaskThread(Runnable task, int priority, Date allocatedTime) {
         this.task = task;
         this.priority = priority;
         this.allocatedTime = allocatedTime;
@@ -39,7 +39,7 @@ public class PriorityTaskThread extends Thread implements Comparable<PriorityTas
      */
     @Override
     public void run() {
-        this.task.start();
+        this.task.run();
     }
 
     /**
@@ -52,16 +52,21 @@ public class PriorityTaskThread extends Thread implements Comparable<PriorityTas
      * is less than, equal to, or greater than the specified object.
      */
     public int compareTo(PriorityTaskThread other) {
+        int result = 0;
+
         if (this.priority < other.priority) {
-            return -1;
+            result =  -1;
         } else if (this.priority > other.priority) {
-            return 1;
+            result =  1;
         } else if (this.allocatedTime.before(other.allocatedTime)) {
-            return 1;
+            result =  1;
         } else if (this.allocatedTime.after(other.allocatedTime)) {
-            return -1;
+            result =  -1;
         }
 
-        return 0;
+        // reverse the result as the PriorityBlockingQueue poll the element with
+        // min value. i.e. reverse the result makes the system poll the higher
+        // priority element or an earlier one in the corner case
+        return -1 * result;
     }
 }

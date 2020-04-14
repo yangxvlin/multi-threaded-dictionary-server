@@ -7,6 +7,7 @@ import org.json.simple.parser.ParseException;
 import java.io.*;
 
 import static com.unimelb.comp90015.Util.Constant.*;
+import static com.unimelb.comp90015.Util.Util.getError;
 import static com.unimelb.comp90015.Util.Util.popupErrorDialog;
 
 /**
@@ -66,7 +67,6 @@ public class SimpleDictionary implements IDictionary {
     public synchronized void remove(String word) throws WordNotFoundException {
         if (dictionary.containsKey(word)) {
             dictionary.remove(word);
-            save();
         } else {
             throw new WordNotFoundException();
         }
@@ -83,7 +83,6 @@ public class SimpleDictionary implements IDictionary {
             throw new DuplicateWordException();
         } else {
             dictionary.put(word, meaning);
-            save();
         }
     }
 
@@ -99,7 +98,7 @@ public class SimpleDictionary implements IDictionary {
             out.write(dictionary.toJSONString());
             out.close();
         } catch (IOException e) {
-            e.printStackTrace();
+            System.out.println(getError(ERROR_SAVE_DICTIONARY_CODE, ERROR_SAVE_DICTIONARY_CONTENT));
         }
     }
 }

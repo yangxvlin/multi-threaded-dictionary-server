@@ -1,7 +1,8 @@
 package com.unimelb.comp90015.Server;
 
+import com.unimelb.comp90015.Server.Dictionary.DictionaryFactory;
 import com.unimelb.comp90015.Server.Dictionary.IDictionary;
-import com.unimelb.comp90015.Server.Dictionary.SimpleDictionary;
+import com.unimelb.comp90015.Server.GUI.ServerGUI;
 import com.unimelb.comp90015.Server.ThreadPool.HandleConnectionThread;
 import com.unimelb.comp90015.Server.ThreadPool.PriorityTaskThread;
 import com.unimelb.comp90015.Server.ThreadPool.ThreadPool;
@@ -35,7 +36,7 @@ public class DictionaryServer {
     private static int serverPort;
 
     /**
-     * dictionary file's path on dist
+     * dictionary file's path on disk
      */
     private static String dictionaryFilePath;
 
@@ -58,11 +59,17 @@ public class DictionaryServer {
         System.out.println("Thread pool created.");
 
         // create dictionary from disk
-        IDictionary dictionary = new SimpleDictionary(dictionaryFilePath);
+        IDictionary dictionary = DictionaryFactory.getInstance()
+                                                    .createSimpleDictionary(dictionaryFilePath);
         System.out.println("Dictionary read.");
 
         // create server
         ServerSocketFactory factory = ServerSocketFactory.getDefault();
+
+        // create GUI
+        ServerGUI serverGUI = new ServerGUI(threadPool, dictionary);
+        System.out.println("GUI created");
+
         try(ServerSocket server = factory.createServerSocket(serverPort)) {
             System.out.println("Server created.");
 

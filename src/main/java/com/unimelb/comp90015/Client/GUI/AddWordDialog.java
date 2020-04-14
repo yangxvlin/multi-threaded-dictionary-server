@@ -19,7 +19,7 @@ public class AddWordDialog extends JFrame {
      */
     private static JTextArea meaningDisplay = new JTextArea();
 
-    public AddWordDialog(DictionaryGUI parent, String word) {
+    public AddWordDialog(ClientGUI parent, String word) {
         // configuration setup
         setTitle("Adding word");
         setLayout(new FlowLayout(FlowLayout.LEFT, 5, 5));

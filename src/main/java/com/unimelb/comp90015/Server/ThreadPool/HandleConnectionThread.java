@@ -22,7 +22,7 @@ import static com.unimelb.comp90015.Util.Util.getError;
  * description: the thread to execute client's request at server
  **/
 
-public class HandleConnectionThread extends Thread {
+public class HandleConnectionThread implements Runnable {
     /**
      * client's socket
      */
@@ -115,7 +115,8 @@ public class HandleConnectionThread extends Thread {
     private void sendRequestQueued() throws IOException {
         JsonObject jsonObject = new JsonObject();
         jsonObject.addProperty(RESPONSE_CODE, SERVER_NOTIFICATION_TASK_CODE);
-        jsonObject.addProperty(CONTENT, "Your request is received and is queued. Currently there are " + threadPool.getQueueSize() + " tasks queued.");
+        jsonObject.addProperty(CONTENT, "Your request is received and is queued." +
+                " Currently there are " + (threadPool.getQueueSize()+1) + " tasks queued.");
         String result = jsonObject.toString();
         client.send(result);
     }

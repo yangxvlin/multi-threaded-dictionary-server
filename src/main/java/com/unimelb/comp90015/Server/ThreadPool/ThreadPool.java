@@ -1,5 +1,8 @@
 package com.unimelb.comp90015.Server.ThreadPool;
 
+import java.util.concurrent.BlockingDeque;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.LinkedBlockingDeque;
 import java.util.concurrent.PriorityBlockingQueue;
 
 /**
@@ -68,8 +71,9 @@ public class ThreadPool {
      * Worker thread in thread pool
      */
     private class WorkerThread extends Thread {
+
         public void run() {
-            PriorityTaskThread task;
+            PriorityTaskThread task = null;
 
             while (true) {
                 synchronized (queue) {
@@ -80,16 +84,23 @@ public class ThreadPool {
                             System.out.println("An error occurred while queue is waiting: " + e.getMessage());
                         }
                     }
-
                     // pop queued task to be executed
-                    task = queue.poll();
+                    try {
+                        task = queue.take();
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
                 }
 
                 try {
-                    task.start();
+                    if (task != null) {
+                        task.run();
+                    }
+                    task = null;
                 } catch (RuntimeException e) {
                     System.out.println("Thread pool is interrupted due to an issue: " + e.getMessage());
                 }
+
             }
         }
     }

@@ -1,15 +1,26 @@
 package com.unimelb.comp90015.Client.GUI;
 
 import com.unimelb.comp90015.Client.ConnectionStrategy.IConnectionStrategy;
+import org.fife.ui.autocomplete.*;
+import org.fife.ui.rsyntaxtextarea.RSyntaxTextArea;
+import org.fife.ui.rsyntaxtextarea.SyntaxConstants;
+import org.fife.ui.rsyntaxtextarea.TokenTypes;
+import org.fife.ui.rsyntaxtextarea.spell.*;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
+import java.net.URL;
 
 import static com.unimelb.comp90015.Util.Constant.APP_ICON_PATH;
+import static com.unimelb.comp90015.Util.Util.loadFileFromJar;
 import static java.awt.Component.CENTER_ALIGNMENT;
 
 /**
@@ -20,7 +31,7 @@ import static java.awt.Component.CENTER_ALIGNMENT;
  *              delete word to the dictionary in the server
  **/
 
-public class DictionaryGUI {
+public class ClientGUI {
     /**
      * frame object
      */
@@ -34,14 +45,17 @@ public class DictionaryGUI {
     /**
      * text box for user to input word
      */
-    private JTextField wordTextField;
+//    private JTextField wordTextField;
+    private RSyntaxTextArea wordTextField;
+
+    private JButton btnSearch;
 
     /**
      * given application connection strategy to the server
      */
     private IConnectionStrategy connectionStrategy;
 
-    public DictionaryGUI(String appName, IConnectionStrategy connectionStrategy) {
+    public ClientGUI(String appName, IConnectionStrategy connectionStrategy) {
         this.connectionStrategy = connectionStrategy;
 
         // create JFrame instance
@@ -112,15 +126,51 @@ public class DictionaryGUI {
      * @param panel panel
      */
     private void placeTextSearch(JPanel panel) {
-        wordTextField = new JTextField(20);
-        wordTextField.setBounds(100, 260, 700, 25);
+//        wordTextField = new JTextField(20);
+//        wordTextField.setBounds(100, 260, 700, 25);
+
+        wordTextField = new RSyntaxTextArea(1, 60);
+        wordTextField.setBounds(100, 260, 700, 28);
+        wordTextField.setFont(new Font("Times New Roman", Font.BOLD,25));
+        wordTextField.setSyntaxEditingStyle(SyntaxConstants.SYNTAX_STYLE_NONE);
+        wordTextField.setCodeFoldingEnabled(true);
+        wordTextField.addKeyListener(new KeyAdapter() {
+            @Override
+            public void keyPressed(KeyEvent e) {
+                if(e.getKeyCode() == KeyEvent.VK_ENTER){
+                    btnSearch.doClick();
+                }
+            }
+        });
+
+        wordTextField.setCaretPosition(0);
+        wordTextField.discardAllEdits();
+        wordTextField.requestFocusInWindow();
+        wordTextField.setMarkOccurrences(true);
+        wordTextField.getSyntaxScheme().getStyle(TokenTypes.COMMENT_DOCUMENTATION).background = new java.awt.Color(255, 240, 240);
+        wordTextField.setLineWrap(true);
+        wordTextField.setWrapStyleWord(true);
+        // add auto correction
+        URL res = this.getClass().getClassLoader().getResource("resource/english_dic.zip");
+        InputStream input = getClass().getResourceAsStream("/resource/english_dic.zip");
+        File zip = loadFileFromJar(res, input);
+        boolean usEnglish = true; // "false" will use British English
+        SpellingParser parser = null;
+        try {
+            parser = SpellingParser.createEnglishSpellingParser(zip, usEnglish);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        wordTextField.addParser(parser);
+
         panel.add(wordTextField);
 
-        JButton btnSearch = new JButton("Search");
+        btnSearch = new JButton("Search");
         btnSearch.setBackground(SystemColor.menu);
         btnSearch.setForeground(Color.BLACK);
         btnSearch.setBounds(810, 260, 100, 25);
         btnSearch.addActionListener(e -> {
+            wordTextField.setText(wordTextField.getText().replace("\n", ""));
             String word = wordTextField.getText();
             connectionStrategy.connect(word, dashboard, connectionStrategy.generateSearchRequest(word));
         });

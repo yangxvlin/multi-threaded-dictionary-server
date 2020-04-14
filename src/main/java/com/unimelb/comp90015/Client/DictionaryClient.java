@@ -1,8 +1,8 @@
 package com.unimelb.comp90015.Client;
 
-import com.unimelb.comp90015.Client.ConnectionStrategy.ConnectionStrategy;
+import com.unimelb.comp90015.Client.ConnectionStrategy.ConnectionFactory;
 import com.unimelb.comp90015.Client.ConnectionStrategy.IConnectionStrategy;
-import com.unimelb.comp90015.Client.GUI.DictionaryGUI;
+import com.unimelb.comp90015.Client.GUI.ClientGUI;
 
 import java.io.IOException;
 
@@ -40,9 +40,10 @@ public class DictionaryClient {
         IConnectionStrategy connectionStrategy = null;
         try {
             // establish connection to server
-            connectionStrategy = new ConnectionStrategy(serverAddress, serverPort, vipPriority);
+            connectionStrategy = ConnectionFactory.getInstance()
+                                                    .createConnectionStrategy(serverAddress, serverPort, vipPriority);
             // start GUI
-            DictionaryGUI gui = new DictionaryGUI(APP_NAME+"VIP:lv-"+vipPriority, connectionStrategy);
+            ClientGUI gui = new ClientGUI(APP_NAME+"--VIP:lv-"+vipPriority, connectionStrategy);
         } catch (IOException e) {
             // connection to server error
             popupErrorDialog(ERROR_CONNECTION_CODE, ERROR_CONNECTION_CONTENT);

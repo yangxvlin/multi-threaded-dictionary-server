@@ -2,6 +2,9 @@ package com.unimelb.comp90015.Util;
 
 import javax.swing.*;
 
+import java.io.*;
+import java.net.URL;
+
 import static com.unimelb.comp90015.Util.Constant.*;
 
 /**
@@ -87,5 +90,63 @@ public class Util {
      */
     public static void inactiveTimeError() {
         popupErrorDialog(ERROR_INVALID_INACTIVE_TIME_CODE, ERROR_INVALID_INACTIVE_TIME_CONTENT);
+    }
+
+    /**
+     * @param string input string to be tested
+     * @return true if a string is made up of alphabet or number.
+     */
+    public static boolean stringIsAlnum(String string) {
+        for (String str: string.split("\n")) {
+            if (!str.matches(".*[a-zA-Z]+.*")) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    /**
+     * @param string input string to be tested
+     * @return true if a string is made up of alphabet.
+     */
+    public static boolean stringIsAlpha(String string) {
+        return string.matches("[a-zA-Z]+");
+    }
+
+    /**
+     * load a file in jar file to a temp file and return the path of the temp file
+     * @param res resource path
+     * @param input input stream
+     * @return the path to temp read file
+     * code modify https://stackoverflow.com/a/14612564
+     */
+    public static File loadFileFromJar(URL res, InputStream input) {
+        File file = null;
+        if (res.getProtocol().equals("jar")) {
+            try {
+//                InputStream input = getClass().getResourceAsStream(resource);
+                file = File.createTempFile("tempfile", ".tmp");
+                OutputStream out = new FileOutputStream(file);
+                int read;
+                byte[] bytes = new byte[1024];
+
+                while ((read = input.read(bytes)) != -1) {
+                    out.write(bytes, 0, read);
+                }
+                out.close();
+                file.deleteOnExit();
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            }
+        } else {
+            //this will probably work in your IDE, but not from a JAR
+            file = new File(res.getFile());
+        }
+
+        if (file != null && !file.exists()) {
+            throw new RuntimeException("Error: File " + file + " not found!");
+        }
+
+        return file;
     }
 }
