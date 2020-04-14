@@ -10,7 +10,7 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.Socket;
 
-import static com.unimelb.comp90015.Util.Constant.VIP_PRIORITY;
+import static com.unimelb.comp90015.Util.Constant.*;
 import static com.unimelb.comp90015.Util.Util.checkWrongVipPriority;
 
 /**
@@ -130,6 +130,18 @@ public class ClientSocket {
         } catch (ParseException | NumberFormatException e) {
             throw new InvalidMessageException();
         }
+    }
+
+    private String generateThreadPoolQueueFullErrorResponse() {
+        JsonObject requestJSON = new JsonObject();
+        requestJSON.addProperty(RESPONSE_CODE, ERROR_THREAD_POOL_QUEUE_FULL_CODE);
+        requestJSON.addProperty(CONTENT, ERROR_THREAD_POOL_QUEUE_FULL_CONTENT);
+        return requestJSON.toString();
+    }
+
+    public void sendConnectionDropedResponse() throws IOException {
+        send(generateThreadPoolQueueFullErrorResponse());
+        this.close();
     }
 
     /**

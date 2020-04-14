@@ -1,8 +1,5 @@
 package com.unimelb.comp90015.Server.ThreadPool;
 
-import java.util.concurrent.BlockingDeque;
-import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.LinkedBlockingDeque;
 import java.util.concurrent.PriorityBlockingQueue;
 
 /**
@@ -29,8 +26,14 @@ public class ThreadPool {
      */
     private final PriorityBlockingQueue<PriorityTaskThread> queue;
 
-    public ThreadPool(int poolSize) {
+    /**
+     * the limit of number of tasks to be queued in the thread pool
+     */
+    private final int threadPoolQueueLimit;
+
+    public ThreadPool(int poolSize, int threadPoolQueueLimit) {
         this.poolSize = poolSize;
+        this.threadPoolQueueLimit = threadPoolQueueLimit;
         queue = new PriorityBlockingQueue<>();
         workers = new WorkerThread[poolSize];
 
@@ -65,6 +68,17 @@ public class ThreadPool {
      */
     public synchronized int getQueueSize() {
         return queue.size();
+    }
+
+    /**
+     * @return the number of threads are working
+     */
+    public int getWorkingThreadNumber() {
+        return workers.length;
+    }
+
+    public synchronized boolean isQueueFull() {
+        return getQueueSize() >= this.threadPoolQueueLimit;
     }
 
     /**

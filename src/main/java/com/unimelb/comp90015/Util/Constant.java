@@ -187,6 +187,16 @@ public class Constant {
      */
     public static final String ERROR_WORD_TOO_LONG_CODE = "418";
 
+    /**
+     * the description for thread pool queue full error
+     */
+    public static final String ERROR_THREAD_POOL_QUEUE_FULL_CONTENT = "The server is too busy please try again!";
+
+    /**
+     * the index for thread pool queue full error
+     */
+    public static final String ERROR_THREAD_POOL_QUEUE_FULL_CODE = "420";
+
     // *************************** Args ***************************
     /**
      * the index for insufficient client arguments error
@@ -226,7 +236,17 @@ public class Constant {
     /**
      * the description for insufficient server arguments error
      */
-    public static final String ERROR_INVALID_SERVER_ARGS_CONTENT = "Insufficient command line arguments. Should be:\n<Port number> <Dictionary file path> <Thread pool size> <Inactive time>";
+    public static final String ERROR_INVALID_SERVER_ARGS_CONTENT = "Insufficient command line arguments. Should be:\n<Port number> <Dictionary file path> <Thread pool size> <Inactive time> <Thread Pool Queue Limit>";
+
+    /**
+     * the index for wrong thread pool size input error
+     */
+    public static final String ERROR_INVALID_THREAD_POOL_QUEUE_LIMIT_CODE = "419";
+
+    /**
+     * the description for wrong thread pool size input error
+     */
+    public static final String ERROR_INVALID_THREAD_POOL_QUEUE_LIMIT_CONTENT = "The thread pool queue limit should be an integer between <Thread pool size>-" + Integer.toString(Integer.MAX_VALUE);
 
     /**
      * the index for wrong thread pool size input error

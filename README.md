@@ -8,7 +8,7 @@ COMP90015 - Distributed System - 2020S1
 ```mvn install```
 3. run server  
 ```cd output/artifacts/DictionaryServer```  
-```java -Duser.language=en -jar DictionaryServer.jar 49153 ../../../src/main/java/com/unimelb/comp90015/Server/dictionary.json 8 10```
+```java -Duser.language=en -jar DictionaryServer.jar 49153 ../../../src/main/java/com/unimelb/comp90015/Server/dictionary.json 8 10 50```
 4. run client  
 ```cd output/artifacts/DictionaryClient```  
 ```java -Duser.language=en -jar DictionaryClient.jar 127.0.0.1 49153 1```

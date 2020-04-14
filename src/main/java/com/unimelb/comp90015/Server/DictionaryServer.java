@@ -50,12 +50,17 @@ public class DictionaryServer {
      */
     private static int inactiveWaitTime;
 
+    /**
+     * the limit of number of tasks to be queued in the thread pool
+     */
+    private static int threadPoolQueueLimit;
+
     public static void main(String[] args) {
         // check inputs
         checkArgs(args);
 
         // create thread pool
-        ThreadPool threadPool = new ThreadPool(threadPoolSize);
+        ThreadPool threadPool = new ThreadPool(threadPoolSize, threadPoolQueueLimit);
         System.out.println("Thread pool created.");
 
         // create dictionary from disk
@@ -77,12 +82,18 @@ public class DictionaryServer {
                 // accept client's connection and receive VIP number
                 ClientSocket clientSocket = new ClientSocket(server.accept(), (int) TimeUnit.SECONDS.toMillis(inactiveWaitTime));
 
-                // create thread
-                HandleConnectionThread connectionThread = new HandleConnectionThread(clientSocket, dictionary, threadPool);
+                // queue in thread pool full, drop the task
+                if (threadPool.isQueueFull()) {
+                    clientSocket.sendConnectionDropedResponse();
+                    clientSocket.close();
+                } else {
+                    // create thread
+                    HandleConnectionThread connectionThread = new HandleConnectionThread(clientSocket, dictionary, threadPool);
+                    // add thread to thread pool
+                    PriorityTaskThread connectionPriorityTaskThread = new PriorityTaskThread(connectionThread, clientSocket.getVipPriority(), new Date());
+                    threadPool.execute(connectionPriorityTaskThread);
+                }
 
-                // add thread to thread pool
-                PriorityTaskThread connectionPriorityTaskThread = new PriorityTaskThread(connectionThread, clientSocket.getVipPriority(), new Date());
-                threadPool.execute(connectionPriorityTaskThread);
             }
 
         } catch (IOException e) {
@@ -102,7 +113,7 @@ public class DictionaryServer {
      * @param args command line arguments
      */
     private static void checkArgs(String[] args) {
-        if (args.length < 4) {
+        if (args.length < 5) {
             popupErrorDialog(ERROR_INVALID_SERVER_ARGS_CODE, ERROR_INVALID_SERVER_ARGS_CONTENT);
         }
 
@@ -133,6 +144,15 @@ public class DictionaryServer {
             }
         } catch (NumberFormatException e) {
             inactiveTimeError();
+        }
+
+        try {
+            threadPoolQueueLimit = Integer.parseInt(args[4]);
+            if (checkWrongThreadPoolQueueLimit(threadPoolQueueLimit, threadPoolSize)) {
+                threadPoolQueueLimitError();
+            }
+        } catch (NumberFormatException e) {
+            threadPoolQueueLimitError();
         }
     }
 }

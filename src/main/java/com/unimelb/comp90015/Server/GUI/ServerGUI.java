@@ -37,33 +37,46 @@ public class ServerGUI {
      */
     private JButton refreshButton;
 
+    /**
+     * display number of threads working
+     */
+    private JTextArea workingThreadsDisplay;
+
     public ServerGUI(ThreadPool threadPool, IDictionary dictionary) {
         JFrame frame = new JFrame("Server");
         frame.setSize(500, 200);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-        panel.setBorder(new EmptyBorder(7, 7, 7, 7));
+//        panel = new JPanel();
 
-        shutdownButton.addActionListener(e -> {
-            threadPool.shutdown();
-            dictionary.save();
-            System.exit(0);
-        });
+        try {
+            panel.setBorder(new EmptyBorder(7, 7, 7, 7));
 
-        // click the shutdown if click the exit
-        frame.addWindowListener(new WindowAdapter() {
-            @Override
-            public void windowClosing(WindowEvent e) {
-                shutdownButton.doClick();
-                e.getWindow().dispose();
-            }
-        });
+            shutdownButton.addActionListener(e -> {
+                threadPool.shutdown();
+                dictionary.save();
+                System.exit(0);
+            });
 
-        refreshButton.addActionListener(e -> {
-            queuedTasksDisplay.setText(Integer.toString(threadPool.getQueueSize()));
-        });
+            // click the shutdown if click the exit
+            frame.addWindowListener(new WindowAdapter() {
+                @Override
+                public void windowClosing(WindowEvent e) {
+                    shutdownButton.doClick();
+                    e.getWindow().dispose();
+                }
+            });
 
-        frame.add(panel);
+            refreshButton.addActionListener(e -> {
+                queuedTasksDisplay.setText(Integer.toString(threadPool.getQueueSize()));
+                workingThreadsDisplay.setText(Integer.toString(threadPool.getWorkingThreadNumber()));
+            });
+
+            frame.add(panel);
+        } catch (NullPointerException e) {
+            System.out.println("Error in creating server GUI!");
+        }
+
         frame.setVisible(true);
     }
 }

@@ -85,6 +85,17 @@ public class Util {
         return second < 1 || second > 1000;
     }
 
+    public static boolean checkWrongThreadPoolQueueLimit(int threadPoolQueueLimit, int threadPoolSize) {
+        return threadPoolQueueLimit < threadPoolSize || threadPoolQueueLimit >= Integer.MAX_VALUE;
+    }
+
+    /**
+     * invoke dialog for thread pool queue limit error
+     */
+    public static void threadPoolQueueLimitError() {
+        popupErrorDialog(ERROR_INVALID_THREAD_POOL_QUEUE_LIMIT_CODE, ERROR_INVALID_THREAD_POOL_QUEUE_LIMIT_CONTENT);
+    }
+
     /**
      * invoke dialog for inactive time error
      */
@@ -124,7 +135,6 @@ public class Util {
         File file = null;
         if (res.getProtocol().equals("jar")) {
             try {
-//                InputStream input = getClass().getResourceAsStream(resource);
                 file = File.createTempFile("tempfile", ".tmp");
                 OutputStream out = new FileOutputStream(file);
                 int read;
