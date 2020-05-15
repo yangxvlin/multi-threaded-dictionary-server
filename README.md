@@ -13,6 +13,15 @@ COMP90015 - Distributed System - 2020S1
 ```cd output/artifacts/DictionaryClient```  
 ```java -Duser.language=en -jar DictionaryClient.jar 127.0.0.1 49153 1```
 
+### or
+
+1. run server  
+```cd submit/Xulin-Yang-904904```  
+```java -Duser.language=en -jar DictionaryServer.jar 49153 ./dictionary.json 8 10 50```
+2. run client  
+```java -Duser.language=en -jar DictionaryClient.jar 127.0.0.1 49153 1```
+
+
 ## How to package jar
 ```mvn package assembly:single```
 
