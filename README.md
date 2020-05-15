@@ -15,3 +15,8 @@ COMP90015 - Distributed System - 2020S1
 
 ## How to package jar
 ```mvn package assembly:single```
+
+## results
+15/15
+
+![](./docs/results.jpg)
